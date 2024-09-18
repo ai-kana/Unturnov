@@ -1,0 +1,25 @@
+CC = cc
+CFLAGS = -Wall -Wextra -g -std=c99
+LFLAGS = -pthread -lcurl 
+FFLAGS = -DCCORD_SIGINTCATCH 
+
+OBJDIR := obj
+SRCS := $(wildcard *.c)
+OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
+
+OUT := bot
+
+$(OUT): $(OBJS)
+	$(CC) $(FFLAGS) $(LFLAGS) $(CFLAGS) -o $@ $^ concord/lib/libdiscord.a
+
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c -o $@ $< 
+
+clean:
+	rm -rf $(OBJDIR)
+	rm $(OUT)
+
+debug:
+	gdb $(OUT)
+
+.PHONY: clean debug
