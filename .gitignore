@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Unturnov.Bot/config.json
+Unturnov.Bot/concord/

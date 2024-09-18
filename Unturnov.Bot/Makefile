@@ -10,6 +10,11 @@ OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 OUT := bot
 
 $(OUT): $(OBJS)
+ifeq (, $(wildcard ./concord))
+	git clone https://github.com/ai-kana/concord.git --depth 1
+	make -C ./concord
+endif
+
 	$(CC) $(FFLAGS) $(LFLAGS) $(CFLAGS) -o $@ $^ concord/lib/libdiscord.a
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
