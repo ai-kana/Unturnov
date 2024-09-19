@@ -1,0 +1,11 @@
+{
+	"Name": "Unturnov",
+	"Version": "0.0.0.0",
+	"Assemblies":
+	[
+		{
+			"Path": "/Unturnov.Core.dll",
+			"Role": "Server"
+		}
+	]
+}

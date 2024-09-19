@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 Unturnov.Bot/config.json
 Unturnov.Bot/concord/
+Unturnov.Core/Makefile
+Unturnov.Module/Makefile

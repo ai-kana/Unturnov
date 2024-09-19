@@ -5,13 +5,17 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.3.3" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="mysqlconnector" Version="2.3.7" />
     <PackageReference Include="OpenMod.UnityEngine.Redist" Version="2021.3.29.1" />
     <PackageReference Include="OpenMod.Unturned.Redist" Version="3.24.4" />
+    <PackageReference Include="UniTask" Version="2.5.5" />
   </ItemGroup>
 
 </Project>

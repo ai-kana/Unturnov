@@ -7,7 +7,7 @@ OBJDIR := obj
 SRCS := $(wildcard *.c)
 OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 
-OUT := bot
+OUT = bot
 
 $(OUT): $(OBJS)
 ifeq (, $(wildcard ./concord))
