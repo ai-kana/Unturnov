@@ -1,8 +1,10 @@
+using System.Reflection;
 using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using UnityEngine;
+using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Services;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -33,6 +35,10 @@ public sealed class UnturnovHost
 
         _Owner = new("Unturnov");
         _Owner.AddComponent<MainThreadWorker>();
+
+        CommandManager commandManager = new();
+        ServiceProvider.RegisterService<CommandManager>(commandManager);
+        commandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
 
         _Logger.LogInformation("Started Unturnov!");
     }

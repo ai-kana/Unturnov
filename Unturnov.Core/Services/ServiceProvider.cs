@@ -21,17 +21,17 @@ public static class ServiceProvider
         return true;
     }
 
-    public static ILogger? CreateLogger<T>()
+    public static ILogger CreateLogger<T>()
     {
-        return _Provider?.CreateLogger<T>() ?? null;
+        return _Provider?.CreateLogger<T>() ?? throw new();
     }
 
-    public static ILogger? CreateLogger(string name)
+    public static ILogger CreateLogger(string name)
     {
-        return _Provider?.CreateLogger(name) ?? null;
+        return _Provider?.CreateLogger(name) ?? throw new();
     }
 
-    public static bool RegisterService<T>(object instance)
+    public static bool RegisterService<T>(T instance) where T : notnull
     {
         return _Services.TryAdd(typeof(T), instance);
     }
@@ -46,7 +46,7 @@ public static class ServiceProvider
         return (T)value;
     }
 
-    public static T? GetRequiredService<T>()
+    public static T GetRequiredService<T>()
     {
         if (!_Services.TryGetValue(typeof(T), out object value))
         {

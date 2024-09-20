@@ -17,7 +17,6 @@ public class ThreadConsole : ICommandInputOutput
 #pragma warning disable CS0067
     public event CommandInputHandler? inputCommitted;
 #pragma warning restore CS0067
-
     public static event InputCommited? OnInputCommitted;
 
     public void initialize(CommandWindow commandWindow)
