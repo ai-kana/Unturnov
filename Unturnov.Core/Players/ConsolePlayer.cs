@@ -13,11 +13,6 @@ public class ConsolePlayer : IPlayer
 
     private readonly ILogger _Logger;
 
-    public void SendMessage(object message)
-    {
-        _Logger.LogInformation(message.ToString());
-    }
-
     public void SendMessage(string format, params object[] args)
     {
         _Logger.LogInformation(format, args);

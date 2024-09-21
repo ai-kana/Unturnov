@@ -12,7 +12,7 @@ public sealed class CommandContext
 
     public CommandExitedException Reply(object text)
     {
-        Caller.SendMessage(text);
+        Caller.SendMessage(text.ToString());
         return new();
     }
 
@@ -36,10 +36,12 @@ public sealed class CommandContext
 
     public void AssertArguments(int count)
     {
-        if (count < _Arguments.Count())
+        if (count > _Arguments.Count())
         {
             throw Reply("This command requires {0} arguments", count);
         }
+
+        //Reply($"Got {_Arguments.Count()} args");
     }
 
     private const string AssertPlayerFailed = "This command can only be execute by players";
@@ -85,8 +87,9 @@ public sealed class CommandContext
 
     internal CommandContext(IEnumerable<string> arguments, IPlayer caller)
     {
-        _Enumerator = _Arguments.GetEnumerator() ;
         _Parser = ServiceProvider.GetRequiredService<CommandParser>();
+        _Arguments = arguments;
+        _Enumerator = _Arguments.GetEnumerator();
         _Enumerator.MoveNext();
         Caller = caller;
     }

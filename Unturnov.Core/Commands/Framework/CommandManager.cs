@@ -72,12 +72,10 @@ public class CommandManager
             return;
         }
 
-        // Interesting mono lib sync error, very much want this system; Will look later
-        //Type commandType = typeData.GetCommand(arguments, out int depth);
-        //arguments = arguments.Skip(1 + depth);
-        Type commandType = typeData.OwnerType;
+        Type commandType = typeData.GetCommand(arguments, out int depth);
+        arguments = arguments.Skip(1 + depth);
 
-        CommandContext context = new(arguments.Skip(1), caller);
+        CommandContext context = new(arguments, caller);
         Command command = (Command)Activator.CreateInstance(commandType, args: context);
         _Logger.LogInformation($"Executing command [{caller.LogName}]: {commandText}");
         try
@@ -94,6 +92,7 @@ public class CommandManager
         catch (Exception exception)
         {
             _Logger.LogError(exception, "Failed to execute command");
+            _Logger.LogError(exception.ToString());
         }
     }
 

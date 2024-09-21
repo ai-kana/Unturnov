@@ -23,7 +23,7 @@ public sealed class UnturnovLogger : ILogger
         LogLevel.Debug => "DBG",
         LogLevel.Information => "INF",
         LogLevel.Warning => "WRN",
-        LogLevel.Error => "WRN",
+        LogLevel.Error => "ERR",
         LogLevel.Critical => "CRT",
         _ => "IDK IT BROKE"
     };

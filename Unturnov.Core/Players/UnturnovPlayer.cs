@@ -12,10 +12,6 @@ public class UnturnovPlayer : IPlayer
     public string LogName => $"{Name} ({SteamID})";
     public CSteamID SteamID => SteamPlayer.playerID.steamID;
 
-    public void SendMessage(object message)
-    {
-    }
-
     public void SendMessage(string format, params object[] args)
     {
     }
