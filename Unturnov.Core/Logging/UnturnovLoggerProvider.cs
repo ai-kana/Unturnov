@@ -11,6 +11,23 @@ public sealed class UnturnovLoggerProvider : ILoggerProvider
 
     private LoggerQueue _Queue;
 
+    internal UnturnovLoggerProvider(string logPath)
+    {
+        FileExtension = Path.GetFileName(logPath).Split('.').Last();
+        FileName = Path.GetFileNameWithoutExtension(logPath);
+        FilePath = Path.GetDirectoryName(logPath);
+        
+        Directory.CreateDirectory(FilePath);
+
+        if (File.Exists(FullPath))
+        {
+            SaveFile();
+        }
+
+        StreamWriter writer = new(File.Create(FullPath));
+        _Queue = new(writer);
+    }
+
     public ILogger CreateLogger(string categoryName)
     {
         return new UnturnovLogger(categoryName, _Queue);
@@ -28,20 +45,4 @@ public sealed class UnturnovLoggerProvider : ILoggerProvider
         _Queue.Dispose();
     }
 
-    internal UnturnovLoggerProvider(string logPath)
-    {
-        FileExtension = Path.GetFileName(logPath).Split('.').Last();
-        FileName = Path.GetFileNameWithoutExtension(logPath);
-        FilePath = Path.GetDirectoryName(logPath);
-        
-        Directory.CreateDirectory(FilePath);
-
-        if (File.Exists(FullPath))
-        {
-            SaveFile();
-        }
-
-        StreamWriter writer = new(File.Create(FullPath));
-        _Queue = new(writer);
-    }
 }

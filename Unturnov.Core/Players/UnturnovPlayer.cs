@@ -1,9 +1,11 @@
 using SDG.Unturned;
 using Steamworks;
+using Unturnov.Core.Chat;
+using Unturnov.Core.Formatting;
 
 namespace Unturnov.Core.Players;
 
-public class UnturnovPlayer : IPlayer
+public class UnturnovPlayer : IPlayer, IFormattable
 {
     public SteamPlayer SteamPlayer {get; private set;}
     public Player Player => SteamPlayer.player;
@@ -12,12 +14,18 @@ public class UnturnovPlayer : IPlayer
     public string LogName => $"{Name} ({SteamID})";
     public CSteamID SteamID => SteamPlayer.playerID.steamID;
 
-    public void SendMessage(string format, params object[] args)
-    {
-    }
-
     public UnturnovPlayer(SteamPlayer player)
     {
         SteamPlayer = player;
+    }
+
+    public void SendMessage(string format, params object[] args)
+    {
+        UnturnovChat.BroadcastMessage(this, Formatter.Format(format, args));
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        return Name;
     }
 }

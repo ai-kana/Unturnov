@@ -4,6 +4,11 @@ public class CommandTokenizer
 {
     private readonly string Text;
 
+    public CommandTokenizer(string text)
+    {
+        Text = text;
+    }
+
     private string ParseQuote(CharEnumerator enumerator)
     {
         string buffer = string.Empty;
@@ -68,10 +73,5 @@ public class CommandTokenizer
     public IEnumerable<string> Parse()
     {
         return Sanitize(Tokenize());
-    }
-
-    public CommandTokenizer(string text)
-    {
-        Text = text;
     }
 }

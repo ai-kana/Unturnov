@@ -10,6 +10,13 @@ public class CommandTypeData
     private readonly SubCommandData _SubCommands;
     private readonly ILogger _Logger;
 
+    internal CommandTypeData(Type type)
+    {
+        OwnerType = type;
+        _Logger = ServiceProvider.CreateLogger<CommandTypeData>();
+        _SubCommands = BuildSubCommandTree(type);
+    }
+
     private SubCommandData GetSubCommand(IEnumerator<string> enumerator, ref int depth)
     {
         SubCommandData current = _SubCommands;
@@ -62,13 +69,6 @@ public class CommandTypeData
         }
 
         return root;
-    }
-
-    internal CommandTypeData(Type type)
-    {
-        OwnerType = type;
-        _Logger = ServiceProvider.CreateLogger<CommandTypeData>();
-        _SubCommands = BuildSubCommandTree(type);
     }
 
     private class SubCommandData

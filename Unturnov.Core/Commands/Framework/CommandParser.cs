@@ -5,51 +5,9 @@ namespace Unturnov.Core.Commands.Framework;
 
 public class CommandParser
 {
-    private ConcurrentDictionary<Type, IArgumentParser> _Parsers;
+    private static ConcurrentDictionary<Type, IArgumentParser> _Parsers;
 
-    public void RegisterCommandParser<T>(ArgumentParser<T> parser)
-    {
-        _Parsers.TryAdd(parser.Type, parser);
-    }
-
-    private bool TryGetParser<T>(out IArgumentParser parser)
-    {
-        return _Parsers.TryGetValue(typeof(T), out parser);
-    }
-
-    public T Parse<T>(string argument)
-    {
-        if (!TryGetParser<T>(out IArgumentParser parser))
-        {
-            throw new KeyNotFoundException(Formatter.Format("{0} is not a parseable type", typeof(T).Name));
-        }
-
-        if (!parser.TryParseInternal(argument, out object? result))
-        {
-            throw new UserMessageException(Formatter.Format("{0} is not a valid {1}", argument, typeof(T).Name));
-        }
-
-        return (T)result!;
-    }
-
-    public bool TryParse<T>(string argument, out T result)
-    {
-        result = default(T)!;
-        if (!TryGetParser<T>(out IArgumentParser parser))
-        {
-            throw new (Formatter.Format("{0} is not a parseable type", typeof(T).Name));
-        }
-
-        if (!parser.TryParseInternal(argument, out object? temp))
-        {
-            return false;
-        }
-
-        result = (T)temp!;
-        return true;
-    }
-
-    public CommandParser()
+    static CommandParser()
     {
         _Parsers = new();
 
@@ -66,6 +24,48 @@ public class CommandParser
         RegisterCommandParser(new BoolParser());
 
         RegisterCommandParser(new BoolParser());
+    }
+
+    public static void RegisterCommandParser<T>(ArgumentParser<T> parser)
+    {
+        _Parsers.TryAdd(parser.Type, parser);
+    }
+
+    private static bool TryGetParser<T>(out IArgumentParser parser)
+    {
+        return _Parsers.TryGetValue(typeof(T), out parser);
+    }
+
+    public static T Parse<T>(string argument)
+    {
+        if (!TryGetParser<T>(out IArgumentParser parser))
+        {
+            throw new KeyNotFoundException(Formatter.Format("{0} is not a parseable type", typeof(T).Name));
+        }
+
+        if (!parser.TryParseInternal(argument, out object? result))
+        {
+            throw new UserMessageException(Formatter.Format("{0} is not a valid {1}", argument, typeof(T).Name));
+        }
+
+        return (T)result!;
+    }
+
+    public static bool TryParse<T>(string argument, out T result)
+    {
+        result = default(T)!;
+        if (!TryGetParser<T>(out IArgumentParser parser))
+        {
+            throw new (Formatter.Format("{0} is not a parseable type", typeof(T).Name));
+        }
+
+        if (!parser.TryParseInternal(argument, out object? temp))
+        {
+            return false;
+        }
+
+        result = (T)temp!;
+        return true;
     }
 
     private class ByteParser : ArgumentParser<byte>

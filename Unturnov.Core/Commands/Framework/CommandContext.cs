@@ -1,5 +1,4 @@
 using Unturnov.Core.Players;
-using Unturnov.Core.Services;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -8,7 +7,14 @@ public sealed class CommandContext
     public IPlayer Caller {get; private set;}
     private readonly IEnumerator<string> _Enumerator; 
     private readonly IEnumerable<string> _Arguments; 
-    private readonly CommandParser _Parser;
+
+    internal CommandContext(IEnumerable<string> arguments, IPlayer caller)
+    {
+        _Arguments = arguments;
+        _Enumerator = _Arguments.GetEnumerator();
+        _Enumerator.MoveNext();
+        Caller = caller;
+    }
 
     public CommandExitedException Reply(object text)
     {
@@ -40,8 +46,6 @@ public sealed class CommandContext
         {
             throw Reply("This command requires {0} arguments", count);
         }
-
-        //Reply($"Got {_Arguments.Count()} args");
     }
 
     private const string AssertPlayerFailed = "This command can only be execute by players";
@@ -65,12 +69,12 @@ public sealed class CommandContext
 
     public T Parse<T>()
     {
-        return _Parser.Parse<T>(_Enumerator.Current);
+        return CommandParser.Parse<T>(_Enumerator.Current);
     }
 
     public bool TryParse<T>(out T result)
     {
-        return _Parser.TryParse<T>(Current, out result);
+        return CommandParser.TryParse<T>(Current, out result);
     }
 
     public string Current => _Enumerator.Current;
@@ -83,14 +87,5 @@ public sealed class CommandContext
     public void Reset()
     {
         _Enumerator.Reset();
-    }
-
-    internal CommandContext(IEnumerable<string> arguments, IPlayer caller)
-    {
-        _Parser = ServiceProvider.GetRequiredService<CommandParser>();
-        _Arguments = arguments;
-        _Enumerator = _Arguments.GetEnumerator();
-        _Enumerator.MoveNext();
-        Caller = caller;
     }
 }

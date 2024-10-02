@@ -106,6 +106,5 @@ public class CommandManager
         _Logger = ServiceProvider.CreateLogger<CommandManager>();
         ThreadConsole.OnInputCommitted += OnInput;
         _CommandTypes = new();
-        ServiceProvider.RegisterService<CommandParser>(new());
     }
 }
