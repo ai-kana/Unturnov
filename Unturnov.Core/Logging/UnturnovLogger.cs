@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Unturnov.Core.Logging;
@@ -6,6 +7,16 @@ public sealed class UnturnovLogger : ILogger
 {
     private string _Name;
     private LoggerQueue _Queue;
+    private LogLevel AllowedLevel;
+
+    internal UnturnovLogger(string name, LoggerQueue queue) 
+    {
+        _Name = name;
+        _Queue = queue;
+
+        string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
+        AllowedLevel = Enum.Parse<LogLevel>(level);
+    }
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
@@ -14,7 +25,7 @@ public sealed class UnturnovLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel < LogLevel.None;
+        return logLevel < AllowedLevel;
     }
 
     private string GetLevelTag(LogLevel level) => level switch 
@@ -54,11 +65,5 @@ public sealed class UnturnovLogger : ILogger
         string consoleMessage = string.Format(MessageFormat, DateTime.Now, color + tag + White, _Name, formatted);
 
         _Queue.Enqueue(new(consoleMessage, fileMessage));
-    }
-
-    internal UnturnovLogger(string name, LoggerQueue queue) 
-    {
-        _Name = name;
-        _Queue = queue;
     }
 }

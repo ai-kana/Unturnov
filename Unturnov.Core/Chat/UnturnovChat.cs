@@ -4,7 +4,6 @@ using UnityEngine;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
 using Unturnov.Core.Services;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Unturnov.Core.Chat;
 

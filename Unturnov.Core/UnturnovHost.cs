@@ -8,7 +8,6 @@ using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Services;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Unturnov.Core;
 
@@ -20,32 +19,31 @@ public sealed class UnturnovHost
     private GameObject? _Owner;
 
     public static string WorkingDirectory {get; private set;} = "";
-    public IConfiguration Configuration {get; private set;} = null!;
-
-    private string _ConfigurationPath = ""; 
+    public static IConfiguration Configuration {get; private set;} = null!;
 
     private async UniTask CreateFile()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
-        string path = "Unturnov.Core.Configuration.json";
+        const string path = "Unturnov.Core.Configuration.json";
         using StreamReader reader = new(assembly.GetManifestResourceStream(path));
 
         string content = await reader.ReadToEndAsync();
 
-        await using StreamWriter writer = new(_ConfigurationPath);
+        await using StreamWriter writer = new(WorkingDirectory + "/Configuration.json");
         await writer.WriteAsync(content);
     }
 
     private async UniTask<IConfiguration> CreateConfiguration()
     {
-        if (!File.Exists(WorkingDirectory + "/Config.json"))
+        if (!File.Exists(WorkingDirectory + "/Configuration.json"))
         {
             await CreateFile();
         }
+        Console.WriteLine("Created file");
 
         ConfigurationBuilder configurationBuilder = new();
         configurationBuilder.SetBasePath(WorkingDirectory);
-        configurationBuilder.AddJsonFile("Config.json");
+        configurationBuilder.AddJsonFile("Configuration.json");
         return configurationBuilder.Build();
     }
 
@@ -53,14 +51,16 @@ public sealed class UnturnovHost
     {
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         WorkingDirectory = Directory.GetCurrentDirectory() + "/Unturnov";
-        _ConfigurationPath = WorkingDirectory + "/Config.json";
+
+        Configuration = await CreateConfiguration();
+
+        string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
+        LogLevel allowedLevel = Enum.Parse<LogLevel>(level);
 
         ServiceProvider.AddLogging(new UnturnovLoggerProvider($"{WorkingDirectory}/Logs/Log.log"));
         _Logger = ServiceProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
         _Logger.LogInformation(WorkingDirectory);
-        
-        Configuration = await CreateConfiguration();
 
         ThreadConsole console = new();
         Dedicator.commandWindow?.removeDefaultIOHandler();
