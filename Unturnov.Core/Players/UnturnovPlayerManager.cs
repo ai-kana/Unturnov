@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
-using Unturnov.Core.Services;
+using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Players;
 
@@ -21,7 +21,7 @@ public class UnturnovPlayerManager
 
     static UnturnovPlayerManager()
     {
-        _Logger = ServiceProvider.CreateLogger<UnturnovPlayerManager>();
+        _Logger = LoggerProvider.CreateLogger<UnturnovPlayerManager>();
         Players = new();
         Provider.onServerConnected += OnServerConnected;
         Provider.onServerDisconnected += OnServerDisconnected;

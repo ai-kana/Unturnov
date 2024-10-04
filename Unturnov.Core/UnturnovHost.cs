@@ -7,7 +7,6 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
-using Unturnov.Core.Services;
 
 namespace Unturnov.Core;
 
@@ -39,7 +38,6 @@ public sealed class UnturnovHost
         {
             await CreateFile();
         }
-        Console.WriteLine("Created file");
 
         ConfigurationBuilder configurationBuilder = new();
         configurationBuilder.SetBasePath(WorkingDirectory);
@@ -57,8 +55,8 @@ public sealed class UnturnovHost
         string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
         LogLevel allowedLevel = Enum.Parse<LogLevel>(level);
 
-        ServiceProvider.AddLogging(new UnturnovLoggerProvider($"{WorkingDirectory}/Logs/Log.log"));
-        _Logger = ServiceProvider.CreateLogger<UnturnovHost>()!;
+        LoggerProvider.AddLogging(new UnturnovLoggerProvider($"{WorkingDirectory}/Logs/Log.log"));
+        _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
         _Logger.LogInformation(WorkingDirectory);
 

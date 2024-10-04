@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
-using Unturnov.Core.Services;
+using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Logging;
 
@@ -21,7 +21,7 @@ public class ThreadConsole : ICommandInputOutput
 
     public void initialize(CommandWindow commandWindow)
     {
-        _Logger = ServiceProvider.CreateLogger("SDG.Unturned");
+        _Logger = LoggerProvider.CreateLogger("SDG.Unturned");
 
         // Not sure if this is needed but it dont matter
         CommandWindow.shouldLogChat = false;

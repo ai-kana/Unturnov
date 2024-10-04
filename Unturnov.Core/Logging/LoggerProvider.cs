@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Unturnov.Core.Logging;
 
-namespace Unturnov.Core.Services;
+namespace Unturnov.Core.Logging;
 
 // Possibly a questionable design choice but I see this as a more functional way to use this concept
-public static class ServiceProvider
+public static class LoggerProvider
 {
     private static ILoggerProvider? _Provider;
 
@@ -29,7 +28,7 @@ public static class ServiceProvider
         return _Provider?.CreateLogger(name) ?? throw new();
     }
 
-    static ServiceProvider()
+    static LoggerProvider()
     {
         ServerManager.OnPreShutdown += OnPreShutdown;
     }

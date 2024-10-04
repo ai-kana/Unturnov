@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Unturnov.Core.Configuration;
 
 namespace Unturnov.Core.Logging;
 
@@ -14,8 +15,24 @@ public sealed class UnturnovLogger : ILogger
         _Name = name;
         _Queue = queue;
 
+        SetLogLevel();
+        ConfigurationEvents.OnConfigurationReloaded += OnConfigurationReloaded;
+    }
+
+    ~UnturnovLogger()
+    {
+        ConfigurationEvents.OnConfigurationReloaded -= OnConfigurationReloaded;
+    }
+
+    private void SetLogLevel()
+    {
         string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
         AllowedLevel = Enum.Parse<LogLevel>(level);
+    }
+
+    private void OnConfigurationReloaded()
+    {
+        SetLogLevel();
     }
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
@@ -25,7 +42,7 @@ public sealed class UnturnovLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel < AllowedLevel;
+        return logLevel > AllowedLevel;
     }
 
     private string GetLevelTag(LogLevel level) => level switch 

@@ -3,7 +3,7 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
-using Unturnov.Core.Services;
+using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Chat;
 
@@ -13,7 +13,7 @@ public class UnturnovChat
 
     static UnturnovChat()
     {
-        _Logger = ServiceProvider.CreateLogger<UnturnovChat>();
+        _Logger = LoggerProvider.CreateLogger<UnturnovChat>();
     }
 
     public static void BroadcastMessage(UnturnovPlayer player, string message, params object[] args)
@@ -43,6 +43,6 @@ public class UnturnovChat
     private static void Broadcast(UnturnovPlayer player, string message, params object[] args)
     {
         _Logger.LogInformation($"{Formatter.FormatNoColor(message, args)}");
-        ChatManager.serverSendMessage(Formatter.Format(message, args), Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatImageUrl, true);
+        ChatManager.serverSendMessage(Formatter.Format(message, args), Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 }

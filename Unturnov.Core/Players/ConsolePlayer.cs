@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
-using Unturnov.Core.Services;
+using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Players;
 
@@ -20,6 +20,6 @@ public class ConsolePlayer : IPlayer
 
     public ConsolePlayer()
     {
-        _Logger = ServiceProvider.CreateLogger<ConsolePlayer>();
+        _Logger = LoggerProvider.CreateLogger<ConsolePlayer>();
     }
 }

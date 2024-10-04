@@ -20,6 +20,8 @@ public class MainThreadWorker : MonoBehaviour
         WorkQueue.Enqueue(new(work));
     }
 
+    /// <summary>This is dogshit but fine since its really only used one shutdown when server stops anyway :P;
+    /// Or at least should be...</summary>
     public static void EnqueueSync(Action work)
     {
         WorkWrapper wrapper = new(work);

@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Unturnov.Core.Services;
+using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -13,7 +13,7 @@ public class CommandTypeData
     internal CommandTypeData(Type type)
     {
         OwnerType = type;
-        _Logger = ServiceProvider.CreateLogger<CommandTypeData>();
+        _Logger = LoggerProvider.CreateLogger<CommandTypeData>();
         _SubCommands = BuildSubCommandTree(type);
     }
 

@@ -3,7 +3,6 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Players;
-using Unturnov.Core.Services;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -103,7 +102,7 @@ public class CommandManager
 
     internal CommandManager()
     {
-        _Logger = ServiceProvider.CreateLogger<CommandManager>();
+        _Logger = LoggerProvider.CreateLogger<CommandManager>();
         ThreadConsole.OnInputCommitted += OnInput;
         _CommandTypes = new();
     }
