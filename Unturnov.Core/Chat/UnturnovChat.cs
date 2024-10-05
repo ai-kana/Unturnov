@@ -4,16 +4,101 @@ using UnityEngine;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Configuration;
+using Microsoft.Extensions.Configuration;
+using Unturnov.Core.Commands.Framework;
 
 namespace Unturnov.Core.Chat;
 
 public class UnturnovChat
 {
     private static readonly ILogger _Logger;
+    private static float _LocalChatDistance;
 
     static UnturnovChat()
     {
         _Logger = LoggerProvider.CreateLogger<UnturnovChat>();
+        ChatManager.onChatted += OnChatted;
+
+        OnConfigurationReloaded();
+        ConfigurationEvents.OnConfigurationReloaded += OnConfigurationReloaded;
+    }
+
+    private static void OnConfigurationReloaded()
+    {
+        float distance = UnturnovHost.Configuration.GetValue<float>("LocalChatDistance");
+        _LocalChatDistance = distance * distance;
+    }
+
+    private static void SendLocal(UnturnovPlayer sender, string text)
+    {
+        string message = $"[{Formatter.RedColor.ColorText("L")}] {sender.Name}: {text}";
+        _Logger.LogInformation($"[Local] {sender.LogName}: {text}");
+
+        foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
+        {
+            if (Vector3.SqrMagnitude(player.Position - sender.Position) > _LocalChatDistance)
+            {
+                continue;
+            }
+
+            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+        }
+    }
+
+    private static void SendGroup(UnturnovPlayer sender, string text)
+    {
+        string message = $"[{Formatter.RedColor.ColorText("G")}] {sender.Name}: {text}";
+        _Logger.LogInformation($"[Group] {sender.LogName}: {text}");
+        foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
+        {
+            if (!player.SteamPlayer.isMemberOfSameGroupAs(sender.SteamPlayer))
+            {
+                continue;
+            }
+
+            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+        }
+    }
+
+    private static void SendGlobal(UnturnovPlayer sender, string text)
+    {
+        string message = $"{sender.Name}: {text}";
+        _Logger.LogInformation($"{sender.LogName}: {text}");
+        foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
+        {
+            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+        }
+    }
+
+    private static void OnChatted(SteamPlayer steamPlayer, EChatMode mode, ref Color chatted, ref bool isRich, string text, ref bool isVisible)
+    {
+        isVisible = false;
+
+        UnturnovPlayer player = UnturnovPlayerManager.Players[steamPlayer.playerID.steamID];
+
+        if (text.StartsWith('/'))
+        {
+            CommandManager.ExecuteCommand(text, player);
+            return;
+        }
+
+        string message = text.Replace("<", "< ");
+
+        switch (mode)
+        {
+            case EChatMode.SAY:
+            case EChatMode.GLOBAL:
+            case EChatMode.WELCOME:
+                SendGlobal(player, message);
+                return;
+            case EChatMode.GROUP:
+                SendGroup(player, message);
+                return;
+            case EChatMode.LOCAL:
+                SendLocal(player, message);
+                return;
+        }
     }
 
     public static void BroadcastMessage(UnturnovPlayer player, string message, params object[] args)

@@ -6,8 +6,9 @@ namespace Unturnov.Core.Formatting;
 
 public static class Formatter
 {
-    private static Color32 MainColor = new(0xF5, 0xA9, 0xB8, 0);
-    private static Color32 FormatColor = new(0x5B, 0xCE, 0xFE, 0);
+    public static Color32 MainColor = new(0xF5, 0xA9, 0xB8, 0);
+    public static Color32 FormatColor = new(0x5B, 0xCE, 0xFE, 0);
+    public static Color32 RedColor = new(0xFF, 0x00, 0x00, 0);
 
     static Formatter()
     {

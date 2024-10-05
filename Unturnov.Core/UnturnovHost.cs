@@ -7,6 +7,7 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Players;
 
 namespace Unturnov.Core;
 
@@ -58,11 +59,13 @@ public sealed class UnturnovHost
         LoggerProvider.AddLogging(new UnturnovLoggerProvider($"{WorkingDirectory}/Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
-        _Logger.LogInformation(WorkingDirectory);
 
         ThreadConsole console = new();
         Dedicator.commandWindow?.removeDefaultIOHandler();
         Dedicator.commandWindow?.addIOHandler(console);
+
+        // Static ctor moment
+        UnturnovPlayerManager.Players.Count();
 
         _Harmony = new("Unturnov.Core");
         _Harmony.PatchAll();
@@ -70,8 +73,7 @@ public sealed class UnturnovHost
         _Owner = new("Unturnov");
         _Owner.AddComponent<MainThreadWorker>();
 
-        CommandManager commandManager = new();
-        commandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
+        CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
 
         _Logger.LogInformation("Started Unturnov!");
     }

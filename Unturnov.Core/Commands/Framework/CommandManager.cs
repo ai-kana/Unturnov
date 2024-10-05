@@ -8,10 +8,17 @@ namespace Unturnov.Core.Commands.Framework;
 
 public class CommandManager
 {
-    private ConcurrentDictionary<string, CommandTypeData> _CommandTypes;
-    private readonly ILogger _Logger;
+    private static ConcurrentDictionary<string, CommandTypeData> _CommandTypes;
+    private static readonly ILogger _Logger;
 
-    private void TryRegisterCommand(string name, CommandTypeData type)
+    static CommandManager()
+    {
+        _Logger = LoggerProvider.CreateLogger<CommandManager>();
+        ThreadConsole.OnInputCommitted += OnInput;
+        _CommandTypes = new();
+    }
+
+    private static void TryRegisterCommand(string name, CommandTypeData type)
     {
         string fixedName = name.ToLower();
         if (_CommandTypes.TryAdd(fixedName, type))
@@ -29,7 +36,7 @@ public class CommandManager
         _Logger.LogWarning($"Something failed trying to register command alias");
     }
 
-    public void RegisterCommandTypes(Assembly assembly)
+    public static void RegisterCommandTypes(Assembly assembly)
     {
         Type[] types = assembly.GetTypes();
         foreach (Type type in types)
@@ -59,7 +66,7 @@ public class CommandManager
         }
     }
 
-    public async void ExecuteCommand(string commandText, IPlayer caller)
+    public static async void ExecuteCommand(string commandText, IPlayer caller)
     {
         CommandTokenizer parser = new(commandText);
         IEnumerable<string> arguments = parser.Parse();
@@ -95,15 +102,8 @@ public class CommandManager
         }
     }
 
-    private void OnInput(string message)
+    private static void OnInput(string message)
     {
         ExecuteCommand(message, new ConsolePlayer());
-    }
-
-    internal CommandManager()
-    {
-        _Logger = LoggerProvider.CreateLogger<CommandManager>();
-        ThreadConsole.OnInputCommitted += OnInput;
-        _CommandTypes = new();
     }
 }
