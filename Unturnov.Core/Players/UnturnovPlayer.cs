@@ -1,8 +1,9 @@
+using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Steamworks;
 using UnityEngine;
 using Unturnov.Core.Chat;
-using Unturnov.Core.Formatting;
+using Unturnov.Core.Permissions;
 
 namespace Unturnov.Core.Players;
 
@@ -17,9 +18,32 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public Vector3 Position => Player.transform.position;
 
-    public UnturnovPlayer(SteamPlayer player)
+    public HashSet<string> Permissions {get; private set;}
+
+    public static async UniTask<UnturnovPlayer> Create(SteamPlayer player)
+    {
+        return new(player, await PermissionManager.LoadPermissions(player.playerID.steamID));
+    }
+
+    private UnturnovPlayer(SteamPlayer player, HashSet<string> permissions)
     {
         SteamPlayer = player;
+        Permissions = permissions;
+    }
+
+    public void AddPermission(string permission)
+    {
+        Permissions.Add(permission.ToLower());
+    }
+
+    public void RemovePermission(string permission)
+    {
+        Permissions.Remove(permission.ToLower());
+    }
+
+    public bool HasPermission(string permission)
+    {
+        return Permissions.Contains(permission.ToLower());
     }
 
     public void SendMessage(string format, params object[] args)

@@ -18,7 +18,6 @@ public sealed class UnturnovHost
 
     private GameObject? _Owner;
 
-    public static string WorkingDirectory {get; private set;} = "";
     public static IConfiguration Configuration {get; private set;} = null!;
 
     private async UniTask CreateFile()
@@ -29,34 +28,33 @@ public sealed class UnturnovHost
 
         string content = await reader.ReadToEndAsync();
 
-        await using StreamWriter writer = new(WorkingDirectory + "/Configuration.json");
+        await using StreamWriter writer = new("Configuration.json");
         await writer.WriteAsync(content);
     }
 
     private async UniTask<IConfiguration> CreateConfiguration()
     {
-        if (!File.Exists(WorkingDirectory + "/Configuration.json"))
+        if (!File.Exists("Configuration.json"))
         {
             await CreateFile();
         }
 
         ConfigurationBuilder configurationBuilder = new();
-        configurationBuilder.SetBasePath(WorkingDirectory);
+        configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
         configurationBuilder.AddJsonFile("Configuration.json");
         return configurationBuilder.Build();
     }
 
     public async UniTask LoadAsync()
     {
-        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-        WorkingDirectory = Directory.GetCurrentDirectory() + "/Unturnov";
-
+        Directory.CreateDirectory(AppContext.BaseDirectory + "/Unturnov");
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory + "/Unturnov");
         Configuration = await CreateConfiguration();
 
         string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
         LogLevel allowedLevel = Enum.Parse<LogLevel>(level);
 
-        LoggerProvider.AddLogging(new UnturnovLoggerProvider($"{WorkingDirectory}/Logs/Log.log"));
+        LoggerProvider.AddLogging(new UnturnovLoggerProvider($"./Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
 

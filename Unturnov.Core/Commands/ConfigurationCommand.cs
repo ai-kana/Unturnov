@@ -18,6 +18,8 @@ public class ConfigurationCommand : Command
 
     public override UniTask Execute()
     {
+        Context.AssertPermission("staff");
+
         IConfigurationRoot root = ((IConfigurationRoot)UnturnovHost.Configuration);
 
         root.Reload();

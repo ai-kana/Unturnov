@@ -4,6 +4,7 @@ using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Permissions;
 
 namespace Unturnov.Core.Players;
 
@@ -38,10 +39,10 @@ public class UnturnovPlayerManager
         }
     }
 
-    private static void OnServerConnected(CSteamID steamID)
+    private static async void OnServerConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
-        UnturnovPlayer player = new(steamPlayer);
+        UnturnovPlayer player = await UnturnovPlayer.Create(steamPlayer);
         Players.TryAdd(player.SteamID, player);
 
         UnturnovChat.BroadcastMessage("{0} has joined the server", player.Name);
@@ -49,9 +50,11 @@ public class UnturnovPlayerManager
         OnPlayerConnected?.BeginInvoke(player, null, null);
     }
 
-    private static void OnServerDisconnected(CSteamID steamID)
+    private static async void OnServerDisconnected(CSteamID steamID)
     {
         Players.Remove(steamID, out UnturnovPlayer player);
+        await PermissionManager.SavePermissions(player);
+
         OnPlayerDisconnected?.Invoke(player);
 
         UnturnovChat.BroadcastMessage("{0} has left the server", player.Name);

@@ -48,6 +48,20 @@ public sealed class CommandContext
         }
     }
 
+    private const string AssertPermissionFailed = "You do not have permission to execute this command";
+    public void AssertPermission(string permission)
+    {
+        if (Caller is not UnturnovPlayer player)
+        {
+            return;
+        }
+
+        if (!player.HasPermission(permission))
+        {
+            throw Reply(AssertPermissionFailed);
+        }
+    }
+
     private const string AssertPlayerFailed = "This command can only be execute by players";
     public void AssertPlayer()
     {
