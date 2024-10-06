@@ -67,6 +67,11 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public bool HasPermission(string permission)
     {
+        if (Permissions.Contains("all"))
+        {
+            return true;
+        }
+
         if (Permissions.Contains(permission.ToLower()))
         {
             return true;
@@ -75,6 +80,11 @@ public class UnturnovPlayer : IPlayer, IFormattable
         HashSet<Role> roles = RoleManager.GetRoles(Roles);
         foreach (Role role in roles)
         {
+            if (role.Permissions.Contains("all"))
+            {
+                return true;
+            }
+
             if (role.Permissions.Contains(permission, StringComparer.OrdinalIgnoreCase))
             {
                 return true;

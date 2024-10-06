@@ -8,7 +8,7 @@ namespace Unturnov.Core.Roles;
 
 public class RoleManager
 {
-    private static HashSet<Role>? _Roles;
+    public static HashSet<Role> Roles {get; private set;} = new(0);
 
     private static async UniTask CreateFile()
     {
@@ -34,10 +34,10 @@ public class RoleManager
         using StreamReader stream = new(File.Open(path, FileMode.Open, FileAccess.Read));
         string text = await stream.ReadToEndAsync();
 
-        _Roles = JsonConvert.DeserializeObject<HashSet<Role>>(text) ?? new();
+        Roles = JsonConvert.DeserializeObject<HashSet<Role>>(text) ?? new();
 
         ILogger logger = LoggerProvider.CreateLogger<RoleManager>();
-        foreach (Role role in _Roles)
+        foreach (Role role in Roles)
         {
             logger.LogInformation(role.Id);
         }
@@ -48,7 +48,7 @@ public class RoleManager
         HashSet<Role> roles = new();
         foreach (string id in ids)
         {
-            Role? role = _Roles.Where(x => string.Compare(x.Id, id, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
+            Role? role = Roles.Where(x => string.Compare(x.Id, id, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
             if (role == null)
             {
                 continue;
@@ -62,7 +62,7 @@ public class RoleManager
 
     public static Role? GetRole(string id)
     {
-        Role? role = _Roles.Where(x => string.Compare(x.Id, id, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
+        Role? role = Roles.Where(x => string.Compare(x.Id, id, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
         if (role == null)
         {
             return null;

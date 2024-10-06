@@ -41,23 +41,24 @@ public class CommandManager
         Type[] types = assembly.GetTypes();
         foreach (Type type in types)
         {
-            if (type.IsNested)
-            {
-                continue;
-            }
-
             if (type.BaseType != typeof(Command))
             {
                 continue;
             }
 
-            CommandDataAttribute commandData = type.GetCustomAttribute<CommandDataAttribute>();
+            CommandDataAttribute? commandData = type.GetCustomAttribute<CommandDataAttribute>();
             if (commandData == null)
             {
                 continue;
             }
 
-            CommandTypeData data = new(type);
+            CommandParentAttribute? parent = type.GetCustomAttribute<CommandParentAttribute>();
+            if (parent != null)
+            {
+                continue;
+            }
+
+            CommandTypeData data = new(type, assembly);
             TryRegisterCommand(commandData.Name, data);
             foreach (string name in commandData.Aliases)
             {

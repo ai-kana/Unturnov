@@ -9,66 +9,90 @@ public class CommandTypeData
     public readonly Type OwnerType;
     private readonly SubCommandData _SubCommands;
     private readonly ILogger _Logger;
+    private readonly Assembly _Assembly;
 
-    internal CommandTypeData(Type type)
+    internal CommandTypeData(Type type, Assembly assembly)
     {
         OwnerType = type;
+        _Assembly = assembly;
         _Logger = LoggerProvider.CreateLogger<CommandTypeData>();
-        _SubCommands = BuildSubCommandTree(type);
-    }
-
-    private SubCommandData GetSubCommand(IEnumerator<string> enumerator, ref int depth)
-    {
-        SubCommandData current = _SubCommands;
-        do 
+        try
         {
-            SubCommandData? result = current.Children.FirstOrDefault(x => x.Switches.Contains(enumerator.Current.ToLower(), StringComparer.OrdinalIgnoreCase));
-            if (result == null)
-            {
-                return current;
-            }
-
-            current = result;
-            depth++;
+        _SubCommands = BuildSubCommandTree();
         }
-        while (enumerator.MoveNext());
-
-        return current;
-    }
-
-    public Type GetCommand(IEnumerable<string> arguments, out int depth)
-    {
-        depth = 0;
-        IEnumerator<string> enumerator = arguments.GetEnumerator();
-        if (!enumerator.MoveNext() || !enumerator.MoveNext())
+        catch (Exception exception)
         {
-            return _SubCommands.Type;
+            _Logger.LogError(exception.ToString());
+            _SubCommands = new(OwnerType);
         }
-
-        return GetSubCommand(enumerator, ref depth).Type;
     }
 
-    private SubCommandData BuildSubCommandTree(Type type)
+    private SubCommandData RegisterSubCommand(SubCommandData owner, IEnumerable<Type> commandTypes)
     {
-        SubCommandData root = new(type);
-        Type[] nestedTypes = type.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.NonPublic);
-
-        foreach (Type nestedType in nestedTypes)
+        foreach (Type command in commandTypes)
         {
-            SubCommandDataAttribute attribute = nestedType.GetCustomAttribute<SubCommandDataAttribute>();
-            if (nestedType.BaseType != typeof(Command) || attribute == null)
+            CommandParentAttribute? parent = command.GetCustomAttribute<CommandParentAttribute>();
+            if (parent == null)
             {
                 continue;
             }
 
-            _Logger.LogInformation($"Added subcommand {nestedType.FullName}");
-            SubCommandData child = BuildSubCommandTree(nestedType);
-            child.Switches.Add(attribute.Name);
-            child.Switches.AddRange(attribute.Aliases);
-            root.Children.Add(child);
+            if (parent.Owner != owner.Type)
+            {
+                continue;
+            }
+
+            CommandDataAttribute? data = command.GetCustomAttribute<CommandDataAttribute>();
+            if (data == null)
+            {
+                continue;
+            }
+
+            SubCommandData child = new(command);
+            child.Switches.Add(data.Name);
+            child.Switches.AddRange(data.Aliases);
+            
+            _Logger.LogInformation($"Registered sub command {command.FullName}");
+            owner.Children.Add(RegisterSubCommand(child, commandTypes));
         }
 
-        return root;
+        return owner;
+    }
+
+    private SubCommandData BuildSubCommandTree()
+    {
+        IEnumerable<Type> commands = _Assembly.GetTypes().Where(x => x.BaseType == typeof(Command));
+        SubCommandData owner = new(OwnerType);
+        return RegisterSubCommand(owner, commands);
+    }
+
+    public Type GetCommand(IEnumerable<string> arguments, out int depth)
+    {
+        IEnumerator<string> enumerator = arguments.GetEnumerator();
+        depth = 0;
+        // move to first argument or return
+        if (!enumerator.MoveNext() || !enumerator.MoveNext())
+        {
+            return OwnerType; 
+        }
+
+        SubCommandData current = _SubCommands;
+        do
+        {
+            foreach (SubCommandData data in _SubCommands.Children)
+            {
+                if (!data.Switches.Contains(enumerator.Current, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                current = data;
+                depth++;
+            }
+        }
+        while (enumerator.MoveNext());
+
+        return current.Type;
     }
 
     private class SubCommandData

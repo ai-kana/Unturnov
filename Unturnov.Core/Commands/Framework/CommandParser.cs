@@ -1,5 +1,8 @@
 using System.Collections.Concurrent;
+using Steamworks;
 using Unturnov.Core.Formatting;
+using Unturnov.Core.Players;
+using Unturnov.Core.Roles;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -24,6 +27,11 @@ public class CommandParser
         RegisterCommandParser(new BoolParser());
 
         RegisterCommandParser(new BoolParser());
+
+        RegisterCommandParser(new RoleParser());
+
+        RegisterCommandParser(new UnturnovPlayerParser());
+        RegisterCommandParser(new CSteamIDParser());
     }
 
     public static void RegisterCommandParser<T>(ArgumentParser<T> parser)
@@ -172,6 +180,67 @@ public class CommandParser
 
             result = false;
             return false;
+        }
+    }
+
+    private class RoleParser : ArgumentParser<Role>
+    {
+        public override bool TryParse(string argument, out Role result)
+        {
+            result = RoleManager.GetRole(argument)!;
+            if (result == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private class UnturnovPlayerParser : ArgumentParser<UnturnovPlayer>
+    {
+        public override bool TryParse(string argument, out UnturnovPlayer result)
+        {
+            if (argument.StartsWith("765") && argument.Length == 17)
+            {
+                if (!ulong.TryParse(argument, out ulong id))
+                {
+                    result = null!;
+                    return false;
+                }
+
+                CSteamID steamID = new(id);
+                return UnturnovPlayerManager.Players.TryGetValue(steamID, out result);
+            }
+
+            result = UnturnovPlayerManager.Players.Values.FirstOrDefault(x => x.Name.Contains(argument, StringComparison.OrdinalIgnoreCase));
+            if (result == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private class CSteamIDParser : ArgumentParser<CSteamID>
+    {
+        public override bool TryParse(string argument, out CSteamID result)
+        {
+            if (!argument.StartsWith("765") || argument.Length != 17)
+            {
+                result = CSteamID.Nil;
+                return false;
+            }
+
+            if (!ulong.TryParse(argument, out ulong id))
+            {
+                result = CSteamID.Nil;
+                return false;
+            }
+
+            result = new(id);
+            return true;
         }
     }
 }
