@@ -18,7 +18,6 @@ public class RoleCommand : Command
         Context.AssertPermission("role");
         throw Context.Reply("/role <add | remove | list>");
     }
-
 }
 
 [CommandParent(typeof(RoleCommand))]

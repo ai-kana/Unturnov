@@ -395,7 +395,9 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+*.sln
 *.sln.iml
+.idea
 Unturnov.Bot/config.json
 Unturnov.Bot/concord/
 Unturnov.Core/Makefile
