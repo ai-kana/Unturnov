@@ -3,7 +3,8 @@ using SDG.Unturned;
 using Steamworks;
 using UnityEngine;
 using Unturnov.Core.Chat;
-using Unturnov.Core.Permissions;
+using Unturnov.Core.Logging;
+using Unturnov.Core.Roles;
 
 namespace Unturnov.Core.Players;
 
@@ -18,17 +19,40 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public Vector3 Position => Player.transform.position;
 
-    public HashSet<string> Permissions {get; private set;}
+    public PlayerData SaveData {get; private set;}
+
+    public HashSet<string> Permissions => SaveData.Permissions;
+    public HashSet<string> Roles => SaveData.Roles;
+
+    public bool OnDuty {get; set;} = false;
+
+    private readonly ILogger _Logger;
 
     public static async UniTask<UnturnovPlayer> Create(SteamPlayer player)
     {
-        return new(player, await PermissionManager.LoadPermissions(player.playerID.steamID));
+        return new(player, await PlayerDataManager.LoadDataAsync(player.playerID.steamID));
     }
 
-    private UnturnovPlayer(SteamPlayer player, HashSet<string> permissions)
+    private UnturnovPlayer(SteamPlayer player, PlayerData data)
     {
+        SaveData = data;
         SteamPlayer = player;
-        Permissions = permissions;
+        _Logger = LoggerProvider.CreateLogger($"{typeof(UnturnovPlayer).FullName}.{Name}");
+    }
+
+    public bool AddRole(string id)
+    {
+        return SaveData.Roles.Add(id);
+    }
+
+    public bool RemoveRole(string id)
+    {
+        return SaveData.Roles.Remove(id);
+    }
+
+    public bool HasRole(string id)
+    {
+        return SaveData.Roles.Contains(id);
     }
 
     public void AddPermission(string permission)
@@ -43,7 +67,21 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public bool HasPermission(string permission)
     {
-        return Permissions.Contains(permission.ToLower());
+        if (Permissions.Contains(permission.ToLower()))
+        {
+            return true;
+        }
+
+        HashSet<Role> roles = RoleManager.GetRoles(Roles);
+        foreach (Role role in roles)
+        {
+            if (role.Permissions.Contains(permission, StringComparer.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void SendMessage(string format, params object[] args)

@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using UnityEngine;
 using Unturnov.Core.Configuration;
@@ -44,5 +45,10 @@ public static class Formatter
     public static string FormatNoColor(string format, params object[] args)
     {
         return string.Format(format, args);
+    }
+
+    public static string FormatList(IEnumerable<string> strings, string seperator)
+    {
+        return String.Join(seperator, strings);
     }
 }

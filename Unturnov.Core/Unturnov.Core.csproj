@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Configuration.json" />
+    <EmbeddedResource Include="Roles.json" />
   </ItemGroup>
 
   <ItemGroup>

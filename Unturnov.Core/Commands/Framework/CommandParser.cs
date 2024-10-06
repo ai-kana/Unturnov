@@ -43,7 +43,7 @@ public class CommandParser
             throw new KeyNotFoundException(Formatter.Format("{0} is not a parseable type", typeof(T).Name));
         }
 
-        if (!parser.TryParseInternal(argument, out object? result))
+        if (!parser.TryParseArgument(argument, out object? result))
         {
             throw new UserMessageException(Formatter.Format("{0} is not a valid {1}", argument, typeof(T).Name));
         }
@@ -59,7 +59,7 @@ public class CommandParser
             throw new (Formatter.Format("{0} is not a parseable type", typeof(T).Name));
         }
 
-        if (!parser.TryParseInternal(argument, out object? temp))
+        if (!parser.TryParseArgument(argument, out object? temp))
         {
             return false;
         }
@@ -158,14 +158,13 @@ public class CommandParser
 
         public override bool TryParse(string argument, out bool result)
         {
-            string lower = argument.ToLower();
-            if (TrueStrings.Contains(argument))
+            if (TrueStrings.Contains(argument, StringComparer.OrdinalIgnoreCase))
             {
                 result = true;
                 return true;
             }
 
-            if (FalseStrings.Contains(argument))
+            if (FalseStrings.Contains(argument, StringComparer.OrdinalIgnoreCase))
             {
                 result = false;
                 return true;

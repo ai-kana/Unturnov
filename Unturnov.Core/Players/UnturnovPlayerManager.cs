@@ -4,7 +4,6 @@ using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Logging;
-using Unturnov.Core.Permissions;
 
 namespace Unturnov.Core.Players;
 
@@ -13,7 +12,7 @@ public delegate void PlayerDisconnected(UnturnovPlayer player);
 
 public class UnturnovPlayerManager
 {
-    public static ConcurrentDictionary<CSteamID, UnturnovPlayer> Players;
+    public static ConcurrentDictionary<CSteamID, UnturnovPlayer> Players {get; private set;}
 
     public static event PlayerConnected? OnPlayerConnected;
     public static event PlayerDisconnected? OnPlayerDisconnected;
@@ -53,7 +52,7 @@ public class UnturnovPlayerManager
     private static async void OnServerDisconnected(CSteamID steamID)
     {
         Players.Remove(steamID, out UnturnovPlayer player);
-        await PermissionManager.SavePermissions(player);
+        await PlayerDataManager.SaveDataAsync(player);
 
         OnPlayerDisconnected?.Invoke(player);
 

@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "Staff",
+        "ChatTag": "Staff",
+        "DutyOnly": true,
+        "Permissions": []
+    },
+    {
+        "Id": "Test",
+        "ChatTag": "Meow",
+        "DutyOnly": false,
+        "Permissions": [
+            "staff"
+        ]
+    }
+]

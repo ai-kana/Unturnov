@@ -7,6 +7,7 @@ using Unturnov.Core.Logging;
 using Unturnov.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using Unturnov.Core.Commands.Framework;
+using Unturnov.Core.Roles;
 
 namespace Unturnov.Core.Chat;
 
@@ -63,12 +64,26 @@ public class UnturnovChat
 
     private static void SendGlobal(UnturnovPlayer sender, string text)
     {
-        string message = $"{sender.Name}: {text}";
+        string message = $"{GetChatTag(sender)}{sender.Name}: {text}";
         _Logger.LogInformation($"{sender.LogName}: {text}");
         foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
         {
             ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
         }
+    }
+
+    private static string GetChatTag(UnturnovPlayer player)
+    {
+        IEnumerable<string> roles = RoleManager.GetRoles(player.Roles)
+            .Where(x => x.DutyOnly ? player.OnDuty : true)
+            .Select(x => x.ChatTag);
+
+        if (roles.Count() == 0)
+        {
+            return "";
+        }
+
+        return $"[{Formatter.FormatList(roles, " | ")}] ";
     }
 
     private static void OnChatted(SteamPlayer steamPlayer, EChatMode mode, ref Color chatted, ref bool isRich, string text, ref bool isVisible)
@@ -103,31 +118,31 @@ public class UnturnovChat
 
     public static void BroadcastMessage(UnturnovPlayer player, string message, params object[] args)
     {
-        Broadcast(player, message, args);
+        Broadcast(player, Formatter.Format(message, args));
     }
 
     public static void BroadcastMessage(IEnumerable<UnturnovPlayer> players, string message, params object[] args)
     {
-        Broadcast(players, message, args);
+        Broadcast(players, Formatter.Format(message, args));
     }
 
     public static void BroadcastMessage(string message, params object[] args)
     {
         IEnumerable<UnturnovPlayer> players = UnturnovPlayerManager.Players.Values;
-        Broadcast(players, message, args);
+        Broadcast(players, Formatter.Format(message, args));
     }
 
-    private static void Broadcast(IEnumerable<UnturnovPlayer> players, string message, params object[] args)
+    private static void Broadcast(IEnumerable<UnturnovPlayer> players, string message)
     {
         foreach (UnturnovPlayer player in players)
         {
-            Broadcast(player, message, args);
+            Broadcast(player, message);
         }
     }
 
-    private static void Broadcast(UnturnovPlayer player, string message, params object[] args)
+    private static void Broadcast(UnturnovPlayer player, string message)
     {
-        _Logger.LogInformation($"{Formatter.FormatNoColor(message, args)}");
-        ChatManager.serverSendMessage(Formatter.Format(message, args), Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        _Logger.LogInformation(message);
+        ChatManager.serverSendMessage(message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 }

@@ -5,7 +5,7 @@ public abstract class ArgumentParser<T> : IArgumentParser
     public Type Type => typeof(T);
     public abstract bool TryParse(string argument, out T result);
 
-    public bool TryParseInternal(string argument, out object? result)
+    public bool TryParseArgument(string argument, out object? result)
     {
         bool ret = TryParse(argument, out T r );
         result = r;

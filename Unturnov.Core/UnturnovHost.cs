@@ -7,6 +7,7 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Roles;
 using Unturnov.Core.Players;
 
 namespace Unturnov.Core;
@@ -72,6 +73,8 @@ public sealed class UnturnovHost
         _Owner.AddComponent<MainThreadWorker>();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
+
+        await RoleManager.RegisterRoles();
 
         _Logger.LogInformation("Started Unturnov!");
     }
