@@ -28,7 +28,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     private readonly ILogger _Logger;
 
-    public static async UniTask<UnturnovPlayer> Create(SteamPlayer player)
+    public static async UniTask<UnturnovPlayer> CreateAsync(SteamPlayer player)
     {
         return new(player, await PlayerDataManager.LoadDataAsync(player.playerID.steamID));
     }

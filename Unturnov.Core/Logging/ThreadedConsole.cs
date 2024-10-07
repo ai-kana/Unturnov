@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
-using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Logging;
 

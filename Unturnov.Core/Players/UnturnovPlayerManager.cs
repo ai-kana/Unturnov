@@ -41,7 +41,7 @@ public class UnturnovPlayerManager
     private static async void OnServerConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
-        UnturnovPlayer player = await UnturnovPlayer.Create(steamPlayer);
+        UnturnovPlayer player = await UnturnovPlayer.CreateAsync(steamPlayer);
         Players.TryAdd(player.SteamID, player);
 
         UnturnovChat.BroadcastMessage("{0} has joined the server", player.Name);

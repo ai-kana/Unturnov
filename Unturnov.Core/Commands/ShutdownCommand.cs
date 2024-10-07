@@ -10,7 +10,7 @@ public class ShutdownCommand : Command
     {
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("shutdown");
         ServerManager.Shutdown();

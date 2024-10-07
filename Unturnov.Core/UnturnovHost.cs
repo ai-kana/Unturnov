@@ -21,7 +21,7 @@ public sealed class UnturnovHost
 
     public static IConfiguration Configuration {get; private set;} = null!;
 
-    private async UniTask CreateFile()
+    private async UniTask CreateFileAsync()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         const string path = "Unturnov.Core.Configuration.json";
@@ -33,11 +33,11 @@ public sealed class UnturnovHost
         await writer.WriteAsync(content);
     }
 
-    private async UniTask<IConfiguration> CreateConfiguration()
+    private async UniTask<IConfiguration> CreateConfigurationAsync()
     {
         if (!File.Exists("Configuration.json"))
         {
-            await CreateFile();
+            await CreateFileAsync();
         }
 
         ConfigurationBuilder configurationBuilder = new();
@@ -50,7 +50,7 @@ public sealed class UnturnovHost
     {
         Directory.CreateDirectory(AppContext.BaseDirectory + "/Unturnov");
         Directory.SetCurrentDirectory(AppContext.BaseDirectory + "/Unturnov");
-        Configuration = await CreateConfiguration();
+        Configuration = await CreateConfigurationAsync();
 
         string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
         LogLevel allowedLevel = Enum.Parse<LogLevel>(level);

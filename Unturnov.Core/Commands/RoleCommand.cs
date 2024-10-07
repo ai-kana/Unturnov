@@ -13,7 +13,7 @@ public class RoleCommand : Command
     {
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
         throw Context.Reply("/role <add | remove | list>");
@@ -28,7 +28,7 @@ public class RoleAddCommand : Command
     {
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
         Context.AssertArguments(2);
@@ -50,7 +50,7 @@ public class RoleRemoveCommand : Command
     {
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
         Context.AssertArguments(2);
@@ -77,7 +77,7 @@ public class RoleListCommand : Command
     {
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
 

@@ -20,11 +20,11 @@ public sealed class LoggerQueue : IDisposable
 
         if (!_IsWriting)
         {
-            _ = Write();
+            _ = WriteAsync();
         }
     }
 
-    private async Task Write()
+    private async Task WriteAsync()
     {
         _IsWriting = true;
 

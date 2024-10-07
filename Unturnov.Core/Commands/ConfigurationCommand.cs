@@ -16,7 +16,7 @@ public class ConfigurationCommand : Command
         _Logger = LoggerProvider.CreateLogger<ConfigurationCommand>();
     }
 
-    public override UniTask Execute()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("staff");
         Context.AssertCooldown();

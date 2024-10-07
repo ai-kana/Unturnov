@@ -87,7 +87,7 @@ public class CommandManager
         _Logger.LogInformation($"Executing command [{caller.LogName}]: {commandText}");
         try
         {
-            await command.Execute();
+            await command.ExecuteAsync();
         }
         catch (CommandExitedException)
         {
