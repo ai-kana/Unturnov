@@ -1,8 +1,6 @@
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Roles;
 
@@ -35,12 +33,6 @@ public class RoleManager
         string text = await stream.ReadToEndAsync();
 
         Roles = JsonConvert.DeserializeObject<HashSet<Role>>(text) ?? new();
-
-        ILogger logger = LoggerProvider.CreateLogger<RoleManager>();
-        foreach (Role role in Roles)
-        {
-            logger.LogInformation(role.Id);
-        }
     }
 
     public static HashSet<Role> GetRoles(HashSet<string> ids)

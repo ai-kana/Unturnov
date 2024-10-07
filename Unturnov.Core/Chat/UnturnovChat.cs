@@ -143,6 +143,6 @@ public class UnturnovChat
     private static void Broadcast(UnturnovPlayer player, string message)
     {
         _Logger.LogInformation(message);
-        ChatManager.serverSendMessage(message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 }

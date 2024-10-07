@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
@@ -26,8 +27,14 @@ public class UnturnovPlayerManager
 
         Provider.onServerConnected += OnServerConnected;
         Provider.onServerDisconnected += OnServerDisconnected;
+        ServerManager.OnPreShutdown += OnPreShutdown;
 
         _Logger.LogInformation("Created manager");
+    }
+
+    private static void OnPreShutdown()
+    {
+        KickAll("Server is shutting down");
     }
 
     public static void KickAll(string reason)

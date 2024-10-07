@@ -1,5 +1,4 @@
 using SDG.Unturned;
-using Unturnov.Core.Players;
 
 namespace Unturnov.Core;
 
@@ -29,9 +28,9 @@ public static class ServerManager
 
     public static void Shutdown()
     {
-        UnturnovPlayerManager.KickAll("Server shutting down");
         Save();
         OnPreShutdown?.Invoke();
+        Thread.Sleep(1000);
         MainThreadWorker.Enqueue(DoShutdown);
     }
 }

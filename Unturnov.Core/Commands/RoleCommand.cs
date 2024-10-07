@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Formatting;
+using Unturnov.Core.Logging;
 using Unturnov.Core.Players;
 using Unturnov.Core.Roles;
 
@@ -81,12 +83,14 @@ public class RoleListCommand : Command
     {
         Context.AssertPermission("role");
 
-        if (Context.HasArguments(1) && Context.TryParse<UnturnovPlayer>(out UnturnovPlayer player))
+        if (Context.HasExactArguments(0))
         {
-            HashSet<Role> roles = RoleManager.GetRoles(player.Roles);
-            throw Context.Reply("{0} has {1}", Formatter.FormatList(roles.Select(x => x.Id), ", "));
+            throw Context.Reply("Roles: {0}", Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
         }
 
-        throw Context.Reply("Roles: {0}", Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
+        UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+
+        HashSet<Role> roles = RoleManager.GetRoles(player.Roles);
+        throw Context.Reply("{0} has {1}", player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
     }
 }

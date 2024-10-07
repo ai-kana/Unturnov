@@ -73,7 +73,6 @@ public sealed class UnturnovHost
         _Owner.AddComponent<MainThreadWorker>();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
-
         await RoleManager.RegisterRoles();
 
         _Logger.LogInformation("Started Unturnov!");

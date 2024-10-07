@@ -124,23 +124,6 @@ public sealed class CommandContext
         player.AddCooldown(_Type.FullName, length);
     }
 
-    public string Form()
-    {
-        if (Current == null)
-        {
-            return string.Empty;
-        }
-
-        List<string> args = new();
-        args.Add(Current);
-        while (MoveNext())
-        {
-            args.Add(Current);
-        }
-
-        return string.Join(args, " ");
-    }
-
     public T Parse<T>()
     {
         return CommandParser.Parse<T>(_Enumerator.Current);
