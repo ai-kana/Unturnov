@@ -101,6 +101,19 @@ public sealed class CommandContext
         throw Reply("You cannot use this command for {0}", Formatter.FormatTime(time));
     }
 
+    public void AssertOnDuty()
+    {
+        if (Caller is not UnturnovPlayer player)
+        {
+            return;
+        }
+
+        if (!player.OnDuty)
+        {
+            throw Reply("You must be on duty to use this command");
+        }
+    }
+
     public void AddCooldown(long length)
     {
         if (Caller is not UnturnovPlayer player)
@@ -131,5 +144,20 @@ public sealed class CommandContext
     public void Reset()
     {
         _Enumerator.Reset();
+    }
+
+    public string Form()
+    {
+        if (Current == null)
+        {
+            return string.Empty;
+        }
+        List<string> args = new();
+        args.Add(Current);
+        while (MoveNext())
+        {
+            args.Add(Current);
+        }
+        return string.Join(" ", args);
     }
 }
