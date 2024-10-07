@@ -14,7 +14,9 @@ public class DutyCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
+
         caller.OnDuty = !caller.OnDuty;
         UnturnovChat.BroadcastMessage("{0} is now {1} duty", caller.Name, caller.OnDuty ? "on" : "off");
         throw Context.Exit;
@@ -31,7 +33,9 @@ public class DutySlientCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("sduty");
         Context.AssertPlayer(out UnturnovPlayer caller);
+
         caller.OnDuty = !caller.OnDuty;
         throw Context.Reply("You are now {0} duty", caller.OnDuty ? "on" : "off");
     }
@@ -47,7 +51,9 @@ public class DutyCheckCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
+
         throw Context.Reply("You are {0} duty", caller.OnDuty ? "on" : "off");
     }
 }
