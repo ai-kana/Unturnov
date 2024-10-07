@@ -12,6 +12,8 @@ public class UnturnovPlayer : IPlayer, IFormattable
 {
     public SteamPlayer SteamPlayer {get; private set;}
     public Player Player => SteamPlayer.player;
+    
+    public PlayerSkills Skills => Player.skills;
 
     public string Name => SteamPlayer.playerID.characterName;
     public string LogName => $"{Name} ({SteamID})";
