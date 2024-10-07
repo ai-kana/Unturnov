@@ -4,7 +4,7 @@ using Unturnov.Core.Commands.Framework;
 
 namespace Unturnov.Core.Commands;
 
-[CommandData("broadcast")]
+[CommandData("broadcast", "say")]
 public class BroadcastCommand : Command
 {
     public BroadcastCommand(CommandContext context) : base(context)
