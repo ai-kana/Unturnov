@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 
@@ -20,9 +23,26 @@ public class ThreadConsole : ICommandInputOutput
 
     public void initialize(CommandWindow commandWindow)
     {
+        // Blatantly ripped from OM
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            CommandLineFlag? shouldManageConsole = null;
+            bool previousShouldManageConsoleValue = true;
+
+            Type windowsConsole = typeof(Provider).Assembly.GetType("SDG.Unturned.WindowsConsole");
+            FieldInfo? shouldManageConsoleField = windowsConsole?.GetField("shouldManageConsole", BindingFlags.Static | BindingFlags.NonPublic);
+
+            if (shouldManageConsoleField != null)
+            {
+                shouldManageConsole = (CommandLineFlag)shouldManageConsoleField.GetValue(null);
+                previousShouldManageConsoleValue = shouldManageConsole.value;
+                shouldManageConsole.value = false;
+            }
+        }
+
+        commandWindow.title = "Unturnov";
         _Logger = LoggerProvider.CreateLogger("SDG.Unturned");
 
-        // Not sure if this is needed but it dont matter
         CommandWindow.shouldLogChat = false;
         CommandWindow.shouldLogDeaths = false;
         CommandWindow.shouldLogAnticheat = false;
@@ -32,14 +52,17 @@ public class ThreadConsole : ICommandInputOutput
 
         Console.CancelKeyPress += OnCancelling;
 
+        UTF8Encoding encoding = new UTF8Encoding(true);
+        Console.OutputEncoding = encoding;
+        Console.InputEncoding = encoding;
+
         _Thread = new(InputThreadLoop);
         _Thread.Start();
     }
 
     private void OnPreShutdown()
     {
-        _IsExiting = true;
-        _Thread?.Join();
+        shutdown(null!);
     }
 
     public void outputError(string error)
@@ -59,7 +82,8 @@ public class ThreadConsole : ICommandInputOutput
 
     public void shutdown(CommandWindow commandWindow)
     {
-        // Def do something here :D
+        _IsExiting = true;
+        _Thread?.Join();
     }
 
     public void update()
