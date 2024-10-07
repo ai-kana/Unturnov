@@ -82,7 +82,7 @@ public class CommandManager
         Type commandType = typeData.GetCommand(arguments, out int depth);
         arguments = arguments.Skip(1 + depth);
 
-        CommandContext context = new(arguments, caller);
+        CommandContext context = new(commandType, arguments, caller);
         Command command = (Command)Activator.CreateInstance(commandType, args: context);
         _Logger.LogInformation($"Executing command [{caller.LogName}]: {commandText}");
         try

@@ -19,12 +19,14 @@ public class ConfigurationCommand : Command
     public override UniTask Execute()
     {
         Context.AssertPermission("staff");
+        Context.AssertCooldown();
 
         IConfigurationRoot root = ((IConfigurationRoot)UnturnovHost.Configuration);
 
         root.Reload();
         ConfigurationEvents.OnConfigurationReloaded?.Invoke();
 
+        Context.AddCooldown(120);
         throw Context.Reply("Reloaded configuration");
     }
 }

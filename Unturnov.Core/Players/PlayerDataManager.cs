@@ -12,6 +12,15 @@ public static class PlayerDataManager
     static PlayerDataManager()
     {
         Directory.CreateDirectory(DataDirectory);
+        ServerManager.OnServerSave += OnSave;
+    }
+
+    private static void OnSave()
+    {
+        foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
+        {
+            _ = SaveDataAsync(player);
+        }
     }
 
     public static async UniTask<PlayerData> LoadDataAsync(CSteamID steamID)

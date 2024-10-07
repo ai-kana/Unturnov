@@ -51,4 +51,30 @@ public static class Formatter
     {
         return String.Join(seperator, strings);
     }
+
+    private static IEnumerable<string> GetTime(long seconds)
+    {
+        TimeSpan span = new(seconds * TimeSpan.TicksPerSecond);
+        if (span.Days > 0)
+        {
+            yield return $"{span.Days} {(span.Days == 1 ? "Day" : "Days")}";
+        }
+        if (span.Hours > 0)
+        {
+            yield return $"{span.Hours} {(span.Hours == 1 ? "Hour" : "Hours")}";
+        }
+        if (span.Minutes > 0)
+        {
+            yield return $"{span.Minutes} {(span.Minutes == 1 ? "Minute" : "Minutes")}";
+        }
+        if (span.Seconds > 0)
+        {
+            yield return $"{span.Seconds} {(span.Seconds == 1 ? "Second" : "Seconds")}";
+        }
+    }
+
+    public static string FormatTime(long seconds)
+    {
+        return FormatList(GetTime(seconds), " ");
+    }
 }

@@ -1,15 +1,19 @@
+using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
 
 namespace Unturnov.Core.Commands.Framework;
 
 public sealed class CommandContext
 {
+
     public IPlayer Caller {get; private set;}
     private readonly IEnumerator<string> _Enumerator; 
     private readonly IEnumerable<string> _Arguments; 
+    private readonly Type _Type;
 
-    internal CommandContext(IEnumerable<string> arguments, IPlayer caller)
+    internal CommandContext(Type type, IEnumerable<string> arguments, IPlayer caller)
     {
+        _Type = type;
         _Arguments = arguments;
         _Enumerator = _Arguments.GetEnumerator();
         _Enumerator.MoveNext();
@@ -79,6 +83,32 @@ public sealed class CommandContext
         }
 
         caller = player;
+    }
+
+    public void AssertCooldown()
+    {
+        if (Caller is not UnturnovPlayer player)
+        {
+            return;
+        }
+
+        long time = player.GetCooldown(_Type.FullName);
+        if (time == 0)
+        {
+            return;
+        }
+
+        throw Reply("You cannot use this command for {0}", Formatter.FormatTime(time));
+    }
+
+    public void AddCooldown(long length)
+    {
+        if (Caller is not UnturnovPlayer player)
+        {
+            return;
+        }
+
+        player.AddCooldown(_Type.FullName, length);
     }
 
     public T Parse<T>()
