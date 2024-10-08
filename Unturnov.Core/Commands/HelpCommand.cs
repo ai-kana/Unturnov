@@ -5,7 +5,7 @@ using Unturnov.Core.Commands.Framework;
 namespace Unturnov.Core.Commands;
 
 [CommandData("help")]
-[CommandSyntax("<command | commands>")]
+[CommandSyntax("<[command] | commands>")]
 public class HelpCommand : Command
 {
     public HelpCommand(CommandContext context) : base(context)
@@ -49,6 +49,7 @@ public class HelpCommandsCommand : Command
     {
         throw Context.Reply(
                 "When using /help <command> it will reply with the possible options. Options are wrapped in <> " 
+                + "An argument wrapped in [] is a value that you need to supply. "
                 + "A ? symbol means the argument is optional. "
                 + "A | symbol means there is different options between them. "
                 + "A , is an alias of an option");

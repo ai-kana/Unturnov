@@ -7,7 +7,12 @@ public class MainThreadWorker : MonoBehaviour
 {
     private static ConcurrentQueue<WorkWrapper> WorkQueue = new();
 
-    public void Update()
+    private void Start()
+    {
+        DontDestroyOnLoad(this);
+    }
+
+    private void Update()
     {
         if (WorkQueue.TryDequeue(out WorkWrapper work))
         {

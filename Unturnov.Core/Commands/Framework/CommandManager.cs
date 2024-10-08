@@ -76,7 +76,6 @@ public class CommandManager
         }
 
         Type commandType = typeData.GetCommand(arguments, out int depth);
-        arguments = arguments.Skip(1 + depth);
 
         return commandType;
     }

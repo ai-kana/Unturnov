@@ -41,7 +41,7 @@ public sealed class UnturnovLoggerProvider : ILoggerProvider
 
     public void Dispose()
     {
-        SaveFile();
         _Queue.Dispose();
+        SaveFile();
     }
 }

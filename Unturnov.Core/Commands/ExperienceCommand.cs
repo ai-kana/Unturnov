@@ -5,6 +5,7 @@ using Unturnov.Core.Players;
 namespace Unturnov.Core.Commands;
 
 [CommandData("experience", "exp", "xp")]
+[CommandSyntax("<add | remove | set | check>")]
 public class ExperienceCommand : Command
 {
     public ExperienceCommand (CommandContext context) : base(context)
@@ -14,12 +15,13 @@ public class ExperienceCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
-        throw Context.Reply("/experience <add | remove | set | check> <player> <amount>");
+        throw Context.Reply("<add | remove | set | check>");
     }
 }
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("add", "a")]
+[CommandSyntax("<[player]> <[Amount]>")]
 public class ExperienceAddCommand : Command 
 {
     public ExperienceAddCommand(CommandContext context) : base(context)
@@ -53,6 +55,7 @@ public class ExperienceAddCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("remove", "r")]
+[CommandSyntax("<[player]> <[Amount]>")]
 public class ExperienceRemoveCommand : Command
 {
     public ExperienceRemoveCommand(CommandContext context) : base(context)
@@ -86,6 +89,7 @@ public class ExperienceRemoveCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("set", "s")]
+[CommandSyntax("<[player]> <[Amount]>")]
 public class ExperienceSetCommand : Command
 {
     public ExperienceSetCommand(CommandContext context) : base(context)
@@ -119,6 +123,7 @@ public class ExperienceSetCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("check", "c")]
+[CommandSyntax("<[player]>")]
 public class ExperienceCheckCommand : Command
 {
     public ExperienceCheckCommand(CommandContext context) : base(context)

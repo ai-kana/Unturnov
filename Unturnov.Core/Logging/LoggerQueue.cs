@@ -33,9 +33,10 @@ public sealed class LoggerQueue : IDisposable
             await _FileWriter.WriteLineAsync(message.FileMessage);
             await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
 
-            await _FileWriter.FlushAsync();
-            await _ConsoleWriter.FlushAsync();
         }
+
+        await _FileWriter.FlushAsync();
+        await _ConsoleWriter.FlushAsync();
 
         _IsWriting = false;
     }

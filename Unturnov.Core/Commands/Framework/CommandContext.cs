@@ -36,7 +36,7 @@ public sealed class CommandContext
 
     public bool HasArguments(int count)
     {
-        return count < _Arguments.Count();
+        return count <= _Arguments.Count();
     }
 
     public bool HasExactArguments(int count)
