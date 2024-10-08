@@ -49,7 +49,23 @@ public class UnturnovPlayerManager
     {
         return Players.TryGetValue(steamID, out player);
     }
-    
+
+    public static bool TryFindPlayer(string search, out UnturnovPlayer player)
+    {
+        if (PlayerTool.tryGetSteamID(search, out CSteamID steamID))
+        {
+            return UnturnovPlayerManager.Players.TryGetValue(steamID, out player);
+        }
+
+        player = UnturnovPlayerManager.Players.Values.FirstOrDefault(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+        if (player == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private static async void OnServerConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);

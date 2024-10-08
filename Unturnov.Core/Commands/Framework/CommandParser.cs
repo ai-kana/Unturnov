@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
+using SDG.Unturned;
 using Steamworks;
+using UnityEngine;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
 using Unturnov.Core.Roles;
@@ -32,6 +34,8 @@ public class CommandParser
 
         RegisterCommandParser(new UnturnovPlayerParser());
         RegisterCommandParser(new CSteamIDParser());
+
+        RegisterCommandParser(new Vector3Parser());
     }
 
     public static void RegisterCommandParser<T>(ArgumentParser<T> parser)
@@ -44,22 +48,22 @@ public class CommandParser
         return _Parsers.TryGetValue(typeof(T), out parser);
     }
 
-    public static T Parse<T>(string argument)
+    public static T Parse<T>(IEnumerator<string> enumerator)
     {
         if (!TryGetParser<T>(out IArgumentParser parser))
         {
             throw new KeyNotFoundException(Formatter.Format("{0} is not a parseable type", typeof(T).Name));
         }
 
-        if (!parser.TryParseArgument(argument, out object? result))
+        if (!parser.TryParseArgument(enumerator, out object? result))
         {
-            throw new UserMessageException(Formatter.Format("{0} is not a valid {1}", argument, typeof(T).Name));
+            throw new UserMessageException(Formatter.Format("{0} is not a valid {1}", enumerator.Current, typeof(T).Name));
         }
 
         return (T)result!;
     }
 
-    public static bool TryParse<T>(string argument, out T result)
+    public static bool TryParse<T>(IEnumerator<string> enumerator, out T result)
     {
         result = default(T)!;
         if (!TryGetParser<T>(out IArgumentParser parser))
@@ -67,7 +71,7 @@ public class CommandParser
             throw new (Formatter.Format("{0} is not a parseable type", typeof(T).Name));
         }
 
-        if (!parser.TryParseArgument(argument, out object? temp))
+        if (!parser.TryParseArgument(enumerator, out object? temp))
         {
             return false;
         }
@@ -78,73 +82,73 @@ public class CommandParser
 
     private class ByteParser : ArgumentParser<byte>
     {
-        public override bool TryParse(string argument, out byte result)
+        public override bool TryParse(IEnumerator<string> enumerator, out byte result)
         {
-            return byte.TryParse(argument, out result);
+            return byte.TryParse(enumerator.Current, out result);
         }
     }
 
     private class ShortParser : ArgumentParser<short>
     {
-        public override bool TryParse(string argument, out short result)
+        public override bool TryParse(IEnumerator<string> enumerator, out short result)
         {
-            return short.TryParse(argument, out result);
+            return short.TryParse(enumerator.Current, out result);
         }
     }
 
     private class IntParser : ArgumentParser<int>
     {
-        public override bool TryParse(string argument, out int result)
+        public override bool TryParse(IEnumerator<string> enumerator, out int result)
         {
-            return int.TryParse(argument, out result);
+            return int.TryParse(enumerator.Current, out result);
         }
     }
 
     private class LongParser : ArgumentParser<long>
     {
-        public override bool TryParse(string argument, out long result)
+        public override bool TryParse(IEnumerator<string> enumerator, out long result)
         {
-            return long.TryParse(argument, out result);
+            return long.TryParse(enumerator.Current, out result);
         }
     }
 
     private class UShortParser : ArgumentParser<ushort>
     {
-        public override bool TryParse(string argument, out ushort result)
+        public override bool TryParse(IEnumerator<string> enumerator, out ushort result)
         {
-            return ushort.TryParse(argument, out result);
+            return ushort.TryParse(enumerator.Current, out result);
         }
     }
 
     private class UIntParser : ArgumentParser<uint>
     {
-        public override bool TryParse(string argument, out uint result)
+        public override bool TryParse(IEnumerator<string> enumerator, out uint result)
         {
-            return uint.TryParse(argument, out result);
+            return uint.TryParse(enumerator.Current, out result);
         }
     }
 
     private class ULongParser : ArgumentParser<ulong>
     {
-        public override bool TryParse(string argument, out ulong result)
+        public override bool TryParse(IEnumerator<string> enumerator, out ulong result)
         {
-            return ulong.TryParse(argument, out result);
+            return ulong.TryParse(enumerator.Current, out result);
         }
     }
 
     private class FloatParser : ArgumentParser<float>
     {
-        public override bool TryParse(string argument, out float result)
+        public override bool TryParse(IEnumerator<string> enumerator, out float result)
         {
-            return float.TryParse(argument, out result);
+            return float.TryParse(enumerator.Current, out result);
         }
     }
 
     private class DoubleParser : ArgumentParser<double>
     {
-        public override bool TryParse(string argument, out double result)
+        public override bool TryParse(IEnumerator<string> argument, out double result)
         {
-            return double.TryParse(argument, out result);
+            return double.TryParse(argument.Current, out result);
         }
     }
 
@@ -164,15 +168,15 @@ public class CommandParser
             "false"
         };
 
-        public override bool TryParse(string argument, out bool result)
+        public override bool TryParse(IEnumerator<string> enumerator, out bool result)
         {
-            if (TrueStrings.Contains(argument, StringComparer.OrdinalIgnoreCase))
+            if (TrueStrings.Contains(enumerator.Current, StringComparer.OrdinalIgnoreCase))
             {
                 result = true;
                 return true;
             }
 
-            if (FalseStrings.Contains(argument, StringComparer.OrdinalIgnoreCase))
+            if (FalseStrings.Contains(enumerator.Current, StringComparer.OrdinalIgnoreCase))
             {
                 result = false;
                 return true;
@@ -185,9 +189,9 @@ public class CommandParser
 
     private class RoleParser : ArgumentParser<Role>
     {
-        public override bool TryParse(string argument, out Role result)
+        public override bool TryParse(IEnumerator<string> enumerator, out Role result)
         {
-            result = RoleManager.GetRole(argument)!;
+            result = RoleManager.GetRole(enumerator.Current)!;
             if (result == null)
             {
                 return false;
@@ -199,47 +203,43 @@ public class CommandParser
 
     private class UnturnovPlayerParser : ArgumentParser<UnturnovPlayer>
     {
-        public override bool TryParse(string argument, out UnturnovPlayer result)
+        public override bool TryParse(IEnumerator<string> enumerator, out UnturnovPlayer result)
         {
-            if (argument.StartsWith("765") && argument.Length == 17)
-            {
-                if (!ulong.TryParse(argument, out ulong id))
-                {
-                    result = null!;
-                    return false;
-                }
-
-                CSteamID steamID = new(id);
-                return UnturnovPlayerManager.Players.TryGetValue(steamID, out result);
-            }
-
-            result = UnturnovPlayerManager.Players.Values.FirstOrDefault(x => x.Name.Contains(argument, StringComparison.OrdinalIgnoreCase));
-            if (result == null)
-            {
-                return false;
-            }
-
-            return true;
+            return UnturnovPlayerManager.TryFindPlayer(enumerator.Current, out result);
         }
     }
 
     private class CSteamIDParser : ArgumentParser<CSteamID>
     {
-        public override bool TryParse(string argument, out CSteamID result)
+        public override bool TryParse(IEnumerator<string> argument, out CSteamID result)
         {
-            if (!argument.StartsWith("765") || argument.Length != 17)
+            return PlayerTool.tryGetSteamID(argument.Current, out result);
+        }
+    }
+
+    private class Vector3Parser : ArgumentParser<Vector3>
+    {
+        public override bool TryParse(IEnumerator<string> enumerator, out Vector3 result)
+        {
+            result = Vector3.zero;
+            if (!float.TryParse(enumerator.Current, out float x))
             {
-                result = CSteamID.Nil;
                 return false;
             }
 
-            if (!ulong.TryParse(argument, out ulong id))
+            enumerator.MoveNext();
+            if (!float.TryParse(enumerator.Current, out float y))
             {
-                result = CSteamID.Nil;
                 return false;
             }
 
-            result = new(id);
+            enumerator.MoveNext();
+            if (!float.TryParse(enumerator.Current, out float z))
+            {
+                return false;
+            }
+
+            result = new(x, y, z);
             return true;
         }
     }

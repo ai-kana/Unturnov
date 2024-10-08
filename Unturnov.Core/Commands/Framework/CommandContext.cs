@@ -131,12 +131,12 @@ public sealed class CommandContext
 
     public T Parse<T>()
     {
-        return CommandParser.Parse<T>(_Enumerator.Current);
+        return CommandParser.Parse<T>(_Enumerator);
     }
 
     public bool TryParse<T>(out T result)
     {
-        return CommandParser.TryParse<T>(Current, out result);
+        return CommandParser.TryParse<T>(_Enumerator, out result);
     }
 
     public string Current => _Enumerator.Current;
