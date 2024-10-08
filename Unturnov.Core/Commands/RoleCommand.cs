@@ -1,14 +1,13 @@
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Formatting;
-using Unturnov.Core.Logging;
 using Unturnov.Core.Players;
 using Unturnov.Core.Roles;
 
 namespace Unturnov.Core.Commands;
 
 [CommandData("role", "r")]
+[CommandSyntax("<add, a | remove, r | list>")]
 public class RoleCommand : Command
 {
     public RoleCommand(CommandContext context) : base(context)
@@ -18,12 +17,13 @@ public class RoleCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
-        throw Context.Reply("/role <add | remove | list>");
+        throw Context.Reply("<add, a | remove, r | list>");
     }
 }
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("add", "a")]
+[CommandSyntax("<player> <role>")]
 public class RoleAddCommand : Command
 {
     public RoleAddCommand(CommandContext context) : base(context)
@@ -46,6 +46,7 @@ public class RoleAddCommand : Command
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("remove", "r")]
+[CommandSyntax("<player> <role>")]
 public class RoleRemoveCommand : Command
 {
     public RoleRemoveCommand(CommandContext context) : base(context)
@@ -73,6 +74,7 @@ public class RoleRemoveCommand : Command
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("list")]
+[CommandSyntax("<player?>")]
 public class RoleListCommand : Command
 {
     public RoleListCommand(CommandContext context) : base(context)

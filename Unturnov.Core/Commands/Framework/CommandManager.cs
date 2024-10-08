@@ -67,23 +67,49 @@ public class CommandManager
         }
     }
 
-    public static async void ExecuteCommand(string commandText, IPlayer caller)
+    public static Type? GetCommandType(IEnumerable<string> arguments)
     {
-        CommandTokenizer parser = new(commandText);
-        IEnumerable<string> arguments = parser.Parse();
-
         string name = arguments.First();
         if (!_CommandTypes.TryGetValue(name, out CommandTypeData typeData))
         {
-            caller.SendMessage($"There is no command called {name}");
-            return;
+            return null;
         }
 
         Type commandType = typeData.GetCommand(arguments, out int depth);
         arguments = arguments.Skip(1 + depth);
 
-        CommandContext context = new(commandType, arguments, caller);
-        Command command = (Command)Activator.CreateInstance(commandType, args: context);
+        return commandType;
+    }
+
+    private static Type? GetCommandType(IEnumerable<string> arguments, out int depth)
+    {
+        string name = arguments.First();
+        depth = 0;
+        if (!_CommandTypes.TryGetValue(name, out CommandTypeData typeData))
+        {
+            return null;
+        }
+
+        Type commandType = typeData.GetCommand(arguments, out depth);
+
+        return commandType;
+    }
+
+    public static async void ExecuteCommand(string commandText, IPlayer caller)
+    {
+        CommandTokenizer parser = new(commandText);
+        IEnumerable<string> arguments = parser.Parse();
+
+        Type? type = GetCommandType(arguments, out int depth);
+        if (type == null)
+        {
+            caller.SendMessage($"There is no command called {arguments.First()}");
+            return;
+        }
+        arguments = arguments.Skip(1 + depth);
+
+        CommandContext context = new(type, arguments, caller);
+        Command command = (Command)Activator.CreateInstance(type, args: context);
         _Logger.LogInformation($"Executing command [{caller.LogName}]: {commandText}");
         try
         {

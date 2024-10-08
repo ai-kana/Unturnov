@@ -6,6 +6,7 @@ using Command = Unturnov.Core.Commands.Framework.Command;
 namespace Unturnov.Core.Commands;
 
 [CommandData("kick")]
+[CommandSyntax("<player> <reason?>")]
 public class KickCommand : Command
 {
     public KickCommand(CommandContext context) : base(context)

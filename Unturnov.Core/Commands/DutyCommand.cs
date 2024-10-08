@@ -6,6 +6,7 @@ using Unturnov.Core.Players;
 namespace Unturnov.Core.Commands;
 
 [CommandData("duty", "d")]
+[CommandSyntax("<silent, s | check, c>")]
 public class DutyCommand : Command
 {
     public DutyCommand(CommandContext context) : base(context)
