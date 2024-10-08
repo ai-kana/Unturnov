@@ -124,6 +124,11 @@ public sealed class CommandContext
         player.AddCooldown(_Type.FullName, length);
     }
 
+    public bool MatchParameters(params string[] matches)
+    {
+        return matches.Contains(Current, StringComparer.OrdinalIgnoreCase);
+    }
+
     public T Parse<T>()
     {
         return CommandParser.Parse<T>(_Enumerator.Current);
