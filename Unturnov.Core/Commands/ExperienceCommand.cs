@@ -5,7 +5,7 @@ using Unturnov.Core.Players;
 namespace Unturnov.Core.Commands;
 
 [CommandData("experience", "exp", "xp")]
-[CommandSyntax("<add | remove | set | check>")]
+[CommandSyntax("<[add | remove | set | check]>")]
 public class ExperienceCommand : Command
 {
     public ExperienceCommand (CommandContext context) : base(context)
