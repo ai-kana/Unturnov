@@ -31,7 +31,10 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public bool OnDuty {get; set;} = false;
     public bool GodMode {get; set;} = false; //@0x5bc2 - Does Nothing For Now. I need to ask you how do you wanna handle it lol.
+    public bool IsFrozen {get; set;} = false;
 
+    public CSteamID? LatestPrivateMessagePlayerSteamID {get; set;} = null;
+    
     private readonly ILogger _Logger;
 
     public static async UniTask<UnturnovPlayer> CreateAsync(SteamPlayer player)
@@ -165,5 +168,23 @@ public class UnturnovPlayer : IPlayer, IFormattable
         if(state)
             Heal();
         GodMode = state;
+    }
+    
+    public void Freeze()
+    {
+        IsFrozen = true;
+        Movement.sendPluginGravityMultiplier(0);
+        Movement.sendPluginSpeedMultiplier(0);
+        Movement.sendPluginJumpMultiplier(0);
+        
+        //@0x5bc2 - Perhaps add a vehicle kick here?
+    }
+    
+    public void Unfreeze()
+    {
+        IsFrozen = false;
+        Movement.sendPluginGravityMultiplier(1);
+        Movement.sendPluginSpeedMultiplier(1);
+        Movement.sendPluginJumpMultiplier(1);
     }
 }

@@ -145,4 +145,14 @@ public class UnturnovChat
         _Logger.LogInformation(message);
         ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
+    
+    public static void SendPrivateMessage(UnturnovPlayer sender, UnturnovPlayer receiver, string text)
+    {
+        text = text.Replace("<", "< ");
+        string message = $"[{Formatter.RedColor.ColorText("PM")}] {sender.Name} -> {receiver.Name}: {text}";
+        _Logger.LogInformation(message);
+
+        ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, receiver.SteamPlayer, useRichTextFormatting:true);
+        ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, sender.SteamPlayer, useRichTextFormatting:true);
+    }
 }

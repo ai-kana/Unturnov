@@ -44,7 +44,12 @@ public class UnturnovPlayerManager
             player.Kick(reason);
         }
     }
-
+    
+    public static bool IsOnline(CSteamID steamID, out UnturnovPlayer player)
+    {
+        return Players.TryGetValue(steamID, out player);
+    }
+    
     private static async void OnServerConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
