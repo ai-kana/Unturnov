@@ -14,6 +14,7 @@ public class ExperienceCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertOnDuty();
         Context.AssertPermission("experience");
         throw Context.Reply("<add | remove | set | check>");
     }
