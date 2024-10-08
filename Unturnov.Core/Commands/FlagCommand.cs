@@ -7,7 +7,7 @@ using Command = Unturnov.Core.Commands.Framework.Command;
 namespace Unturnov.Core.Commands;
 
 [CommandData("flag")]
-[CommandSyntax("<get | set | unset>")]
+[CommandSyntax("<[get | set | unset]>")]
 public class FlagCommand : Command
 {
     public FlagCommand(CommandContext context) : base(context)
@@ -18,7 +18,7 @@ public class FlagCommand : Command
     {
         Context.AssertOnDuty();
         Context.AssertPermission("flag");
-        throw Context.Reply("<get | set | unset>");
+        throw Context.Reply("<[get | set | unset]>");
     }
 }
 

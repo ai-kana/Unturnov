@@ -16,6 +16,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public PlayerSkills Skills => Player.skills;
     public PlayerQuests Quests => Player.quests;
     public PlayerLife Life => Player.life;
+    public PlayerMovement Movement => Player.movement;
 
     public string Name => SteamPlayer.playerID.characterName;
     public string LogName => $"{Name} ({SteamID})";
