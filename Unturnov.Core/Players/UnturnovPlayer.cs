@@ -15,6 +15,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     
     public PlayerSkills Skills => Player.skills;
     public PlayerQuests Quests => Player.quests;
+    public PlayerLife Life => Player.life;
 
     public string Name => SteamPlayer.playerID.characterName;
     public string LogName => $"{Name} ({SteamID})";
@@ -28,6 +29,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public HashSet<string> Roles => SaveData.Roles;
 
     public bool OnDuty {get; set;} = false;
+    public bool GodMode {get; set;} = false; //@0x5bc2 - Does Nothing For Now. I need to ask you how do you wanna handle it lol.
 
     private readonly ILogger _Logger;
 
@@ -145,5 +147,22 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public void Kick(string reason)
     {
         Provider.kick(SteamID, reason);
+    }
+
+    public void Heal()
+    {
+        Life.askHeal(100, true, true);
+        Life.askEat(100);
+        Life.askDrink(100);
+        Life.askRest(100);
+        Life.askDisinfect(100);
+        Life.askBreath(100);
+    }
+    
+    public void SetGod(bool state)
+    { 
+        if(state)
+            Heal();
+        GodMode = state;
     }
 }
