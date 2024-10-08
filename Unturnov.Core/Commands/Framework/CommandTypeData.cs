@@ -27,8 +27,9 @@ public class CommandTypeData
         }
     }
 
-    private SubCommandData RegisterSubCommand(SubCommandData owner, IEnumerable<Type> commandTypes)
+    private SubCommandData RegisterSubCommand(SubCommandData owner, IEnumerable<Type> commandTypes, int i)
     {
+        i++;
         foreach (Type command in commandTypes)
         {
             CommandParentAttribute? parent = command.GetCustomAttribute<CommandParentAttribute>();
@@ -52,8 +53,8 @@ public class CommandTypeData
             child.Switches.Add(data.Name);
             child.Switches.AddRange(data.Aliases);
             
-            _Logger.LogInformation($"Registered sub command {command.FullName}");
-            owner.Children.Add(RegisterSubCommand(child, commandTypes));
+            _Logger.LogInformation($"Registered sub command {i}::{command.FullName}");
+            owner.Children.Add(RegisterSubCommand(child, commandTypes, i));
         }
 
         return owner;
@@ -63,7 +64,7 @@ public class CommandTypeData
     {
         IEnumerable<Type> commands = _Assembly.GetTypes().Where(x => x.BaseType == typeof(Command));
         SubCommandData owner = new(OwnerType);
-        return RegisterSubCommand(owner, commands);
+        return RegisterSubCommand(owner, commands, 0);
     }
 
     public Type GetCommand(IEnumerable<string> arguments, out int depth)
@@ -79,15 +80,14 @@ public class CommandTypeData
         SubCommandData current = _SubCommands;
         do
         {
-            foreach (SubCommandData data in _SubCommands.Children)
+            foreach (SubCommandData data in current.Children)
             {
-                if (!data.Switches.Contains(enumerator.Current, StringComparer.OrdinalIgnoreCase))
+                if (data.Switches.Contains(enumerator.Current, StringComparer.OrdinalIgnoreCase))
                 {
-                    continue;
+                    current = data;
+                    depth++;
+                    break;
                 }
-
-                current = data;
-                depth++;
             }
         }
         while (enumerator.MoveNext());
