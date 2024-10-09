@@ -9,12 +9,15 @@ public class UnturnovPlayerQuests
 
     public readonly UnturnovPlayer Owner; 
     private PlayerQuests _Quests => Owner.Player.quests;
+    private PlayerSkills _Skills => Owner.Player.skills;
 
     public UnturnovPlayerQuests(UnturnovPlayer owner)
     {
         Owner = owner;
     }
 
+    public int Reputation => _Skills.reputation;
+    
     public bool TryGetMarkerPosition(out Vector3 position)
     {
         position = Vector3.zero;
@@ -52,5 +55,21 @@ public class UnturnovPlayerQuests
     public bool TryGetFlag(ushort id, out short value)
     {
         return _Quests.getFlag(id, out value);
+    }
+    
+        
+    public void GiveReputation(int rep)
+    {
+        _Skills.askRep(rep);
+    }
+    
+    public void RemoveReputation(int rep)
+    {
+        _Skills.askRep(-rep);
+    }
+    
+    public void SetReputation(int rep)
+    {
+        _Skills.askRep(rep - _Skills.reputation);
     }
 }
