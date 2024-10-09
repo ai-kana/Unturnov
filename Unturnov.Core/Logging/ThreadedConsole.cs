@@ -13,7 +13,6 @@ public class ThreadConsole : ICommandInputOutput
     private ILogger? _Logger;
 
     private Thread? _Thread;
-    private bool _IsExiting;
 
     // OOP moment
 #pragma warning disable CS0067
@@ -57,6 +56,7 @@ public class ThreadConsole : ICommandInputOutput
         Console.InputEncoding = encoding;
 
         _Thread = new(InputThreadLoop);
+        _Thread.IsBackground = true;
         _Thread.Start();
     }
 
@@ -82,8 +82,6 @@ public class ThreadConsole : ICommandInputOutput
 
     public void shutdown(CommandWindow commandWindow)
     {
-        _IsExiting = true;
-        _Thread?.Join();
     }
 
     public void update()
@@ -114,11 +112,6 @@ public class ThreadConsole : ICommandInputOutput
     {
         while (true) 
         {
-            if (_IsExiting)
-            {
-                return;
-            }
-
             HandleInput();
             Thread.Sleep(50);
         }

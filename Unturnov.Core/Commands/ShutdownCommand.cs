@@ -23,12 +23,6 @@ public class ShutdownCommand : Command
             delay = Context.Parse<uint>();
         }
 
-        if (delay == 0)
-        {
-            ServerManager.Shutdown();
-            throw Context.Reply("Shutting down server");
-        }
-
         ServerManager.QueueShutdown(delay);
         throw Context.Exit;
     }

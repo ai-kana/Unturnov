@@ -27,7 +27,6 @@ public class UnturnovPlayerQuests
         Ray ray = new(new Vector3(marker.x, Level.HEIGHT, marker.y), Vector3.down);
         if (!Physics.Raycast(ray, out RaycastHit info, Level.HEIGHT, RayMasks.BLOCK_COLLISION))
         {
-            position = Vector3.zero;
             return false;
         }
 

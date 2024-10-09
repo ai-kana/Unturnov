@@ -13,8 +13,6 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public SteamPlayer SteamPlayer {get; private set;}
     public Player Player => SteamPlayer.player;
     
-    public PlayerSkills Skills => Player.skills;
-
     public string Name => SteamPlayer.playerID.characterName;
     public string LogName => $"{Name} ({SteamID})";
     public CSteamID SteamID => SteamPlayer.playerID.steamID;
@@ -31,6 +29,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public readonly UnturnovPlayerLife Life; 
     public readonly UnturnovPlayerQuests Quests;
     public readonly UnturnovPlayerCooldowns Cooldowns;
+    public readonly UnturnovPlayerSkills Skills;
 
     public CSteamID? LastPrivateMessage {get; set;} = null;
 
@@ -51,6 +50,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
         Life = new(this);
         Quests = new(this);
         Cooldowns = new(this);
+        Skills = new(this);
     }
 
     public void SendMessage(string format, params object[] args)

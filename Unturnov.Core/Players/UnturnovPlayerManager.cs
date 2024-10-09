@@ -27,7 +27,6 @@ public class UnturnovPlayerManager
 
         Provider.onServerConnected += OnServerConnected;
         Provider.onServerDisconnected += OnServerDisconnected;
-        ServerManager.OnPreShutdown += OnPreShutdown;
 
         // God mode
         DamageTool.damagePlayerRequested += OnDamageRequested;
@@ -57,15 +56,11 @@ public class UnturnovPlayerManager
         shouldAllow = !player?.Life.GodMode ?? true;
     }
 
-    private static void OnPreShutdown()
-    {
-        KickAll("Server is shutting down");
-    }
-
     public static void KickAll(string reason)
     {
-        foreach (UnturnovPlayer player in Players.Values)
+        while (Players.Count > 0)
         {
+            Players.TryRemove(Players.Keys.First(), out UnturnovPlayer player);
             player.Kick(reason);
         }
     }

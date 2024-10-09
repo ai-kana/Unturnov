@@ -48,7 +48,7 @@ public class ExperienceAddCommand : Command
             throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
         }
         
-        player.Skills.askAward(amount);
+        player.Skills.GiveExperience(amount);
         
         throw Context.Reply("Added {0} experience to {1}", amount, player.Name);
     }
@@ -82,7 +82,7 @@ public class ExperienceRemoveCommand : Command
             throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
         }
         
-        player.Skills.askSpend(amount);
+        player.Skills.RemoveExperience(amount);
         
         throw Context.Reply("Removed {0} experience from {1}", amount, player.Name);
     }
@@ -116,7 +116,7 @@ public class ExperienceSetCommand : Command
             throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
         }
         
-        player.Skills.ReceiveExperience(amount);
+        player.Skills.SetExperience(amount);
         
         throw Context.Reply("Set {0}'s experience to {1}", player.Name, amount);
     }
@@ -138,6 +138,6 @@ public class ExperienceCheckCommand : Command
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
         
-        throw Context.Reply("{0} has {1} experience", player.Name, player.Skills.experience);
+        throw Context.Reply("{0} has {1} experience", player.Name, player.Skills.Experience);
     }
 }

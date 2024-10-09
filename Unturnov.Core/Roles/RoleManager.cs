@@ -62,9 +62,4 @@ public class RoleManager
 
         return role;
     }
-
-    internal static HashSet<Role> GetRoles(object roles)
-    {
-        throw new NotImplementedException();
-    }
 }

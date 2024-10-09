@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Formatting;
+using Unturnov.Core.Players;
 
 namespace Unturnov.Core;
 
@@ -23,8 +25,10 @@ public static class ServerManager
     public static void Shutdown()
     {
         DoSave();
+        UnturnovPlayerManager.KickAll("Server shutting down");
         OnPreShutdown?.Invoke();
-        MainThreadWorker.EnqueueSync(Provider.shutdown);
+        Provider.shutdown(0);
+        //MainThreadWorker.Enqueue(Provider.shutdown);
     }
 
     public static bool CancelShutdown()
@@ -72,6 +76,8 @@ public static class ServerManager
             }
         }
 
+
+        //Provider.shutdown();
         Shutdown();
     }
 }

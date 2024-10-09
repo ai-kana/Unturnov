@@ -34,7 +34,7 @@ public class UnturnovPlayerPermissions
             return true;
         }
 
-        HashSet<Role> roles = RoleManager.GetRoles(Owner.Roles);
+        HashSet<Role> roles = RoleManager.GetRoles(Owner.Roles.Roles);
         foreach (Role role in roles)
         {
             if (role.Permissions.Contains("all"))

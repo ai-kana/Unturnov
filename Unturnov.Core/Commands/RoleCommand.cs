@@ -92,7 +92,7 @@ public class RoleListCommand : Command
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
 
-        HashSet<Role> roles = RoleManager.GetRoles(player.Roles);
+        HashSet<Role> roles = RoleManager.GetRoles(player.Roles.Roles);
         throw Context.Reply("{0} has {1}", player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
     }
 }

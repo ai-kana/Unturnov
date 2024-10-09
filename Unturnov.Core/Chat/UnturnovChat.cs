@@ -74,7 +74,7 @@ public class UnturnovChat
 
     private static string GetChatTag(UnturnovPlayer player)
     {
-        IEnumerable<string> roles = RoleManager.GetRoles(player.Roles)
+        IEnumerable<string> roles = RoleManager.GetRoles(player.Roles.Roles)
             .Where(x => x.DutyOnly ? player.OnDuty : true && x.ChatTag != string.Empty)
             .Select(x => x.ChatTag);
 
