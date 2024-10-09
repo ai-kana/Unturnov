@@ -1,4 +1,6 @@
 using SDG.Unturned;
+using Steamworks;
+using UnityEngine;
 
 namespace Unturnov.Core.Players.Components;
 
@@ -17,5 +19,10 @@ public class UnturnovPlayerLife
     public void Heal()
     {
         _Life.sendRevive();
+    }
+
+    public void Kill()
+    {
+        _Life.askDamage(101, Vector3.up, EDeathCause.KILL, ELimb.SKULL, new CSteamID(0UL), out _, false, ERagdollEffect.GOLD, true, true);
     }
 }

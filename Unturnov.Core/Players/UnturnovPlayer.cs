@@ -78,4 +78,9 @@ public class UnturnovPlayer : IPlayer, IFormattable
         //@0x5bc2 - Made this a separate method, so in case Kick gets some sort of logs, Exit kicks dont get logged.
         Provider.kick(SteamID, "You exited the server");
     }
+    
+    public void Spy(CSteamID caller)
+    {
+        Player.sendScreenshot(caller, null);
+    }
 }

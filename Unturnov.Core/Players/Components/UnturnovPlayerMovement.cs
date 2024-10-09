@@ -81,6 +81,7 @@ public class UnturnovPlayerMovement
         SetSpeed(0f);
         SetJump(0f);
         SetGravity(0f);
+        _PlayerMovement.forceRemoveFromVehicle();
     }
 
     public void Unfreeze()
