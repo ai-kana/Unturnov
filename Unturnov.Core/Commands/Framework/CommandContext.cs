@@ -60,7 +60,7 @@ public sealed class CommandContext
             return;
         }
 
-        if (!player.HasPermission(permission))
+        if (!player.Permissions.HasPermission(permission))
         {
             throw Reply(AssertPermissionFailed);
         }
@@ -92,7 +92,7 @@ public sealed class CommandContext
             return;
         }
 
-        long time = player.GetCooldown(_Type.FullName);
+        long time = player.Cooldowns.GetCooldown(_Type.FullName);
         if (time == 0)
         {
             return;
@@ -121,10 +121,10 @@ public sealed class CommandContext
             return;
         }
 
-        player.AddCooldown(_Type.FullName, length);
+        player.Cooldowns.AddCooldown(_Type.FullName, length);
     }
 
-    public bool MatchParameters(params string[] matches)
+    public bool MatchParameter(params string[] matches)
     {
         return matches.Contains(Current, StringComparer.OrdinalIgnoreCase);
     }

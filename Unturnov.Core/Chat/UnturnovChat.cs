@@ -38,7 +38,7 @@ public class UnturnovChat
 
         foreach (UnturnovPlayer player in UnturnovPlayerManager.Players.Values)
         {
-            if (Vector3.SqrMagnitude(player.Position - sender.Position) > _LocalChatDistance)
+            if (Vector3.SqrMagnitude(player.Movement.Position - sender.Movement.Position) > _LocalChatDistance)
             {
                 continue;
             }

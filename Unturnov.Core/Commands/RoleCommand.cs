@@ -39,7 +39,7 @@ public class RoleAddCommand : Command
         Context.MoveNext();
         Role role = Context.Parse<Role>();
 
-        player.AddRole(role.Id);
+        player.Roles.AddRole(role.Id);
         throw Context.Reply("Added {0} to {1}", player.Name, role.Id);
     }
 }
@@ -62,12 +62,12 @@ public class RoleRemoveCommand : Command
         Context.MoveNext();
         Role role = Context.Parse<Role>();
 
-        if (!player.HasRole(role.Id))
+        if (!player.Roles.HasRole(role.Id))
         {
             throw Context.Reply("{0} does not have {1}", player.Name, role.Id);
         }
 
-        player.AddRole(role.Id);
+        player.Roles.AddRole(role.Id);
         throw Context.Reply("Removed {0} from {1}", player.Name, role.Id);
     }
 }

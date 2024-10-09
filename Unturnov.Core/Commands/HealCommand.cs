@@ -21,13 +21,13 @@ public class HealCommand : Command
         {
             Context.AssertPermission("heal.other");
             UnturnovPlayer other = Context.Parse<UnturnovPlayer>();
-            other.Heal();
+            other.Life.Heal();
             Context.AddCooldown(60);
             throw Context.Reply("Successfully healed {0}", other.Name);
         }
         
         Context.AssertPlayer(out UnturnovPlayer callerPlayer);
-        callerPlayer.Heal();
+        callerPlayer.Life.Heal();
         Context.AddCooldown(60);
         throw Context.Reply("Successfully healed yourself");
     }

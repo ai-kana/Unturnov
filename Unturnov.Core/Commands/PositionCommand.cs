@@ -23,20 +23,20 @@ public class PositionCommand : Command
         {
             Context.AssertPlayer(out UnturnovPlayer self);
             
-            x = self.Position.x.ToString("F1");
-            y = self.Position.y.ToString("F1");
-            z = self.Position.z.ToString("F1");
+            x = self.Movement.Position.x.ToString("F1");
+            y = self.Movement.Position.y.ToString("F1");
+            z = self.Movement.Position.z.ToString("F1");
             
-            throw Context.Reply("You are at X: {0} | Y: {1} | Z: {2}", x, y, z);
+            throw Context.Reply("You are at {0}, {1}, {2}", x, y, z);
         }
         
         Context.AssertArguments(1);
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
         
-        x = target.Position.x.ToString("F1");
-        y = target.Position.y.ToString("F1");
-        z = target.Position.z.ToString("F1");
+        x = target.Movement.Position.x.ToString("F1");
+        y = target.Movement.Position.y.ToString("F1");
+        z = target.Movement.Position.z.ToString("F1");
         
-        throw Context.Reply("{0} is at X: {1} | Y: {2} | Z: {3}", target.Name, x, y, z);
+        throw Context.Reply("{0} is at {1}, {2}, {3}", target.Name, x, y, z);
     }
 }

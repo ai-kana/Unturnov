@@ -13,26 +13,25 @@ public class ReplyCommand : Command
     {
     }
 
-    public override async UniTask ExecuteAsync()
+    public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("reply");
         Context.AssertArguments(1);
 
         string message = Context.Form();
 
         Context.AssertPlayer(out UnturnovPlayer self);
         
-        if(self.LatestPrivateMessagePlayerSteamID == null) 
+        if(self.LastPrivateMessage == null) 
         {
-            throw Context.Reply("You have no one to reply to.");
+            throw Context.Reply("You have no one to reply to");
         }
 
-        if (!UnturnovPlayerManager.IsOnline(self.LatestPrivateMessagePlayerSteamID!.Value, out UnturnovPlayer target))
+        if (!UnturnovPlayerManager.TryGetPlayer(self.LastPrivateMessage.Value, out UnturnovPlayer target))
         {
-            throw Context.Reply("The player you are trying to reply to is not online.");
+            throw Context.Reply("The player you are trying to reply to is not online");
         }
         
-        target.LatestPrivateMessagePlayerSteamID = self.SteamID;
+        target.LastPrivateMessage = self.SteamID;
         
         UnturnovChat.SendPrivateMessage(self, target, message);
         throw Context.Exit;

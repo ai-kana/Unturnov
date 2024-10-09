@@ -16,8 +16,8 @@ public class FlagCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("flag");
+        Context.AssertOnDuty();
         throw Context.Reply("<[get | set | unset]>");
     }
 }
@@ -34,6 +34,7 @@ public class FlagGetCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("flag");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
@@ -45,15 +46,12 @@ public class FlagGetCommand : Command
             throw Context.Reply("Flag value must be greater than 0");
         }
 
-        PlayerQuests quests = player.Quests;
-
-        if (!quests.flagsList.Exists(f => f.id == flag))
+        if (!player.Quests.FlagExists(flag))
         {
             throw Context.Reply("Player {0} does not have flag {1}", player.Name, flag);
         }
         
-        quests.getFlag(flag, out short value);
-        
+        player.Quests.TryGetFlag(flag, out short value);
         throw Context.Reply("Flag {0} for {1} is {2}", flag, player.Name, value);
     }
 }
@@ -70,6 +68,7 @@ public class FlagSetCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("flag");
+        Context.AssertOnDuty();
         Context.AssertArguments(3);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
@@ -78,15 +77,7 @@ public class FlagSetCommand : Command
         Context.MoveNext();
         short value = Context.Parse<short>();
 
-        if (flag == 0)
-        {
-            throw Context.Reply("Flag value must be greater than 0");
-        }
-
-        PlayerQuests quests = player.Quests;
-        
-        quests.setFlag(flag, value);
-        
+        player.Quests.SetFlag(flag, value);
         throw Context.Reply("Set flag {0} for {1} to {2}", flag, player.Name, value);
     }
 }
@@ -103,26 +94,19 @@ public class FlagUnsetCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("flag");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
         Context.MoveNext();
         ushort flag = Context.Parse<ushort>();
 
-        if (flag == 0)
-        {
-            throw Context.Reply("Flag value must be greater than 0");
-        }
-
-        PlayerQuests quests = player.Quests;
-
-        if (!quests.flagsList.Exists(f => f.id == flag))
+        if (!player.Quests.FlagExists(flag))
         {
             throw Context.Reply("Player {0} does not have flag {1}", player.Name, flag);
         }
         
-        quests.removeFlag(flag);
-        
+        player.Quests.RemoveFlag(flag);
         throw Context.Reply("Unset flag {0} for {1}", flag, player.Name);
     }
 }

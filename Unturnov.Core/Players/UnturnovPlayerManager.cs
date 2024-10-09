@@ -29,7 +29,32 @@ public class UnturnovPlayerManager
         Provider.onServerDisconnected += OnServerDisconnected;
         ServerManager.OnPreShutdown += OnPreShutdown;
 
+        // God mode
+        DamageTool.damagePlayerRequested += OnDamageRequested;
+        PlayerLife.OnTellHealth_Global += GodModeHandler;
+        PlayerLife.OnTellFood_Global += GodModeHandler;
+        PlayerLife.OnTellWater_Global += GodModeHandler;
+        PlayerLife.OnTellVirus_Global += GodModeHandler;
+        PlayerLife.OnTellBroken_Global += GodModeHandler;
+        PlayerLife.OnTellBleeding_Global += GodModeHandler;
+
         _Logger.LogInformation("Created manager");
+    }
+
+    private static void GodModeHandler(PlayerLife life)
+    {
+        // Do this with a patch later
+        TryGetPlayer(life.player, out UnturnovPlayer player);
+        if (player.Life.GodMode)
+        {
+            life.sendRevive();
+        }
+    }
+
+    private static void OnDamageRequested(ref DamagePlayerParameters parameters, ref bool shouldAllow)
+    {
+        TryGetPlayer(parameters.player, out UnturnovPlayer player);
+        shouldAllow = !player?.Life.GodMode ?? true;
     }
 
     private static void OnPreShutdown()
@@ -44,10 +69,25 @@ public class UnturnovPlayerManager
             player.Kick(reason);
         }
     }
-    
-    public static bool IsOnline(CSteamID steamID, out UnturnovPlayer player)
+
+    public static bool TryGetPlayer(Player inPlayer, out UnturnovPlayer player)
     {
-        return Players.TryGetValue(steamID, out player);
+        return Players.TryGetValue(inPlayer.channel.owner.playerID.steamID, out player);
+    }
+
+    public static bool TryGetPlayer(SteamPlayer inPlayer, out UnturnovPlayer player)
+    {
+        return Players.TryGetValue(inPlayer.playerID.steamID, out player);
+    }
+
+    public static bool TryGetPlayer(CSteamID id, out UnturnovPlayer player)
+    {
+        return Players.TryGetValue(id, out player);
+    }
+    
+    public static bool IsOnline(CSteamID steamID)
+    {
+        return Players.TryGetValue(steamID, out _);
     }
 
     public static bool TryFindPlayer(string search, out UnturnovPlayer player)

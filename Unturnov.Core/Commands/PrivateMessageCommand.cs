@@ -5,7 +5,7 @@ using Unturnov.Core.Players;
 
 namespace Unturnov.Core.Commands;
 
-[CommandData("pm")]
+[CommandData("pm", "dm", "msg")]
 [CommandSyntax("<[player] [message]>")]
 public class PrivateMessageCommand : Command
 {
@@ -15,9 +15,7 @@ public class PrivateMessageCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("pm");
         Context.AssertArguments(2);
-        
         Context.AssertPlayer(out UnturnovPlayer self);
         
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
@@ -29,7 +27,7 @@ public class PrivateMessageCommand : Command
             throw Context.Reply("You can't send a private message to yourself.");
         }
         
-        target.LatestPrivateMessagePlayerSteamID = self.SteamID;
+        target.LastPrivateMessage = self.SteamID;
 
         UnturnovChat.SendPrivateMessage(self, target, message);
         throw Context.Exit;

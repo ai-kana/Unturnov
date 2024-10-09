@@ -15,23 +15,17 @@ public class GodCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("god");
-        Context.AssertArguments(1);
-        
-        string option = Context.Current.ToLower();
-        bool offOrOn = option == "on";
-        
-        if (Context.HasExactArguments(2))
+        Context.AssertPlayer(out UnturnovPlayer caller);
+
+        if (Context.HasArguments(1))
         {
-            Context.MoveNext();
-            UnturnovPlayer other = Context.Parse<UnturnovPlayer>();
-            other.SetGod(offOrOn);
-            throw Context.Reply("Successfully put {0}, {1} God Mode.", other.Name, offOrOn ? "in" : "out of");
+            Context.AssertPermission("god.other");
+            UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+            player.Life.GodMode = !player.Life.GodMode;
+            throw Context.Reply(player.Life.GodMode ? "{0} is now in god mode" : "{0} is now off god mode", player.Name);
         }
-        
-        Context.AssertPlayer(out UnturnovPlayer callerPlayer);
 
-        callerPlayer.SetGod(offOrOn);
-
-        throw Context.Reply("Successfully put yourself {0} God Mode!", offOrOn ? "in" : "out of");
+        caller.Life.GodMode = !caller.Life.GodMode;
+        throw Context.Reply(caller.Life.GodMode ? "You are now in god mode" : "You are now off god mode");
     }
 }

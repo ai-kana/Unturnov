@@ -9,6 +9,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Roles;
 using Unturnov.Core.Players;
+using System.Runtime.InteropServices;
 
 namespace Unturnov.Core;
 
@@ -59,9 +60,12 @@ public sealed class UnturnovHost
         _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
 
-        ThreadConsole console = new();
-        Dedicator.commandWindow?.removeDefaultIOHandler();
-        Dedicator.commandWindow?.addIOHandler(console);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            ThreadConsole console = new();
+            Dedicator.commandWindow?.removeDefaultIOHandler();
+            Dedicator.commandWindow?.addIOHandler(console);
+        }
 
         // Static ctor moment
         UnturnovPlayerManager.Players.Count();

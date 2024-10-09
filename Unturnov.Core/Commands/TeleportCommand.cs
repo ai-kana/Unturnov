@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using SDG.Unturned;
+using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 using Command = Unturnov.Core.Commands.Framework.Command;
@@ -16,29 +17,44 @@ public class TeleportCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("teleport");
+        Context.AssertOnDuty();
+        Context.AssertArguments(1);
 
-        if (Context.HasExactArguments(0))
+        if (Context.HasExactArguments(1))
         {
-            throw Context.Reply("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>");
+            Context.AssertPlayer(out UnturnovPlayer caller);
+            UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+            caller.Movement.Teleport(player);
+            throw Context.Reply("Teleported you to {0}", player.Name);
         }
 
-        if (!Context.TryParse(out float x))
-            throw Context.Reply("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>");
-        Context.MoveNext();
-        
-        if (!Context.TryParse(out float y))
-            throw Context.Reply("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>");
-        Context.MoveNext();
-        
-        if (!Context.TryParse(out float z))
-            throw Context.Reply("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>");
-        
-        Context.AssertPlayer(out UnturnovPlayer self);
-        
-        self.Teleport(x, y, z);
-        throw Context.Reply("Teleporting to {0} | {1} | {2}", x, y, z);
+        if (Context.HasExactArguments(2))
+        {
+            UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+            Context.MoveNext();
+            UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
+
+            target.Movement.Teleport(player);
+            throw Context.Reply("Teleported {0} to {1}", player.Name, target.Name);
+        }
+
+        if (Context.HasExactArguments(3))
+        {
+            Context.AssertPlayer(out UnturnovPlayer caller);
+
+            Vector3 position = Context.Parse<Vector3>();
+            caller.Movement.Teleport(position);
+            throw Context.Reply("Teleported you to {0}, {1}, {2}", position.x, position.y, position.z);
+        }
+
+        {
+            UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+            Context.MoveNext();
+            Vector3 position = Context.Parse<Vector3>();
+            player.Movement.Teleport(position);
+            throw Context.Reply("Teleporting {0} to {1}, {2}, {3}", player.Name, position.x, position.y, position.z);
+        }
     }
 }
 
@@ -54,56 +70,33 @@ public class TeleportLocationCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("teleport");
         Context.AssertOnDuty();
-        Context.AssertPermission("teleport.location");
         Context.AssertArguments(1);
         
         string location = Context.Form();
         
         Context.AssertPlayer(out UnturnovPlayer self);
 
-        if (self.Teleport(location, out var name))
+        if (TryFindLocation(location, out LocationDevkitNode node))
         {
-            throw Context.Reply("Teleporting to location {0}", name);
+            self.Movement.Teleport(node.inspectablePosition);
+            throw Context.Reply("Teleporting to {0}", node.locationName);
         }
 
-        throw Context.Reply("Failed to teleport to {0}", location);
-    }
-}
-
-[CommandParent(typeof(TeleportCommand))]
-[CommandData("player", "p")]
-[CommandSyntax("<[player]>")]
-public class TeleportPlayerCommand : Command
-{
-    public TeleportPlayerCommand(CommandContext context) : base(context)
-    {
+        throw Context.Reply("Failed to find location called {0}", location);
     }
 
-    public override UniTask ExecuteAsync()
+    private bool TryFindLocation(string name, out LocationDevkitNode node)
     {
-        Context.AssertOnDuty();
-        Context.AssertPermission("teleport.player");
-        Context.AssertArguments(1);
-
-        if (Context.HasExactArguments(2))
+        IEnumerable<LocationDevkitNode> nodes = LocationDevkitNodeSystem.Get().GetAllNodes();
+        node = nodes.FirstOrDefault(x => x.locationName.Contains(name, StringComparison.OrdinalIgnoreCase));
+        if (node == null)
         {
-            //add fucking xyz here by checking if first arg is float or not
-            
-            UnturnovPlayer target1 = Context.Parse<UnturnovPlayer>();
-            Context.MoveNext();
-            UnturnovPlayer target2 = Context.Parse<UnturnovPlayer>();
-            
-            target1.TeleportToPlayer(target2);
-            throw Context.Reply("Teleporting player {0} to player {1}", target1.Name, target2.Name);
+            return false;
         }
-        
-        Context.AssertPlayer(out UnturnovPlayer self);
-        UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
-        
-        self.TeleportToPlayer(target);
-        
-        throw Context.Reply("Teleporting to player {0}", target.Name);
+
+        return true;
     }
 }
 
@@ -117,13 +110,16 @@ public class TeleportWaypointCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("teleport");
         Context.AssertOnDuty();
-        Context.AssertPermission("teleport.waypoint");
-        
         Context.AssertPlayer(out UnturnovPlayer self);
         
-        self.TeleportToWaypoint();
+        if (!self.Quests.TryGetMarkerPosition(out Vector3 position))
+        {
+            throw Context.Reply("You have not placed a marker");
+        }
         
+        self.Movement.Teleport(position);
         throw Context.Reply("Teleporting to waypoint!");
     }
 }
@@ -139,26 +135,14 @@ public class TeleportHereCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("teleport");
         Context.AssertOnDuty();
-        Context.AssertPermission("teleport.here");
         Context.AssertArguments(1);
-        
         Context.AssertPlayer(out UnturnovPlayer self);
-        Context.AssertPlayer(out UnturnovPlayer target);
+
+        UnturnovPlayer toTp = Context.Parse<UnturnovPlayer>();
         
-        self.TeleportHere(target);
-        
-        throw Context.Reply("Teleporting player {0} to you", target.Name);
+        toTp.Movement.Teleport(self);
+        throw Context.Reply("Teleporting player {0} to you", toTp.Name);
     }
 }
-
-/*
-tp x y z
-tp location
-tp player
-tp waypoint
-tp player player
-tp player x y z
-tp here player
-
-*/

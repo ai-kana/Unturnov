@@ -38,7 +38,7 @@ public class WarnAddCommand : Command
         Context.MoveNext();
         string reason = Context.Form();
         
-        target.AddWarning(reason, self.SteamID);
+        //target.AddWarning(reason, self.SteamID);
         
         throw Context.Reply("Warned {0} for {1}", target.Name, reason);
     }
@@ -62,10 +62,10 @@ public class WarnRemoveCommand : Command
         Context.MoveNext();
         int id = Context.Parse<int>(); //@0x5bc2 - this is subject to change, depending how you/kana stores the Ids.
         
-        if(!target.HasWarning(id)) 
-            throw Context.Reply("{0} has no warning with id {1}", target.Name, id);
+        //if(!target.HasWarning(id)) 
+            //throw Context.Reply("{0} has no warning with id {1}", target.Name, id);
         
-        target.RemoveWarning(id, self.SteamID);
+        //target.RemoveWarning(id, self.SteamID);
         
         throw Context.Reply("Removed warning #{0} from {1}", id, target.Name);
     }

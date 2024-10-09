@@ -20,7 +20,7 @@ public class FreezeCommand : Command
         
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
         
-        player.Freeze();
+        player.Movement.Freeze();
         throw Context.Reply("Successfully froze {0}", player.Name);
     }
 }
