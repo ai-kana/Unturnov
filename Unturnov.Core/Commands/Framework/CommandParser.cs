@@ -36,6 +36,7 @@ public class CommandParser
         RegisterCommandParser(new CSteamIDParser());
 
         RegisterCommandParser(new Vector3Parser());
+        RegisterCommandParser(new GuidParser());
     }
 
     public static void RegisterCommandParser<T>(ArgumentParser<T> parser)
@@ -241,6 +242,14 @@ public class CommandParser
 
             result = new(x, y, z);
             return true;
+        }
+    }
+    
+    private class GuidParser : ArgumentParser<Guid>
+    {
+        public override bool TryParse(IEnumerator<string> enumerator, out Guid result)
+        {
+            return Guid.TryParse(enumerator.Current, out result);
         }
     }
 }
