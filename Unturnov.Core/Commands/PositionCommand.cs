@@ -27,7 +27,7 @@ public class PositionCommand : Command
             y = self.Movement.Position.y.ToString("F1");
             z = self.Movement.Position.z.ToString("F1");
             
-            throw Context.Reply("You are at {0}, {1}, {2}", x, y, z);
+            throw Context.Reply("You are at: {0} | {1} | {2}", x, y, z);
         }
         
         Context.AssertArguments(1);
@@ -37,6 +37,6 @@ public class PositionCommand : Command
         y = target.Movement.Position.y.ToString("F1");
         z = target.Movement.Position.z.ToString("F1");
         
-        throw Context.Reply("{0} is at {1}, {2}, {3}", target.Name, x, y, z);
+        throw Context.Reply("{0} is at: {1} | {2} | {3}", target.Name, x, y, z);
     }
 }
