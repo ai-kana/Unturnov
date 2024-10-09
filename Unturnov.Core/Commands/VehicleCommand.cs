@@ -14,64 +14,50 @@ public class VehicleCommand : Command
     {
     }
 
-    private bool GetVehicleAssetByName(string name, out VehicleAsset? vehicleAsset)
+    public bool GetVehicleAsset(string input, out VehicleAsset? vehicleAsset)
     {
-        name = name.Trim();
-        if (string.IsNullOrWhiteSpace(name))
+        input = input.Trim();
+        if (string.IsNullOrWhiteSpace(input))
         {
             vehicleAsset = null;
             return false;
         }
-        
+
         List<VehicleAsset> vehicleAssetsList = new();
         Assets.find(vehicleAssetsList);
-        vehicleAssetsList = vehicleAssetsList.OrderBy(v => v.id).ToList();
-        
-        foreach (var vAsset in vehicleAssetsList)
+
+        if (ushort.TryParse(input, out ushort id))
         {
-            if(vAsset.vehicleName.Contains(name, StringComparison.InvariantCultureIgnoreCase) ||
-               vAsset.FriendlyName.Contains(name, StringComparison.InvariantCultureIgnoreCase))
+            if (id == 0)
             {
-                vehicleAsset = vAsset;
-                return true;
+                vehicleAsset = null;
+                return false;
             }
+
+            vehicleAsset = vehicleAssetsList.FirstOrDefault(i => i.id == id);
+            return vehicleAsset != null;
         }
 
-        vehicleAsset = null;
-        return false;
-    } 
+        vehicleAsset = vehicleAssetsList.FirstOrDefault(i =>
+            i.vehicleName.Contains(input, StringComparison.InvariantCultureIgnoreCase) ||
+            i.name.Contains(input, StringComparison.InvariantCultureIgnoreCase) ||
+            i.name.Contains(input, StringComparison.InvariantCultureIgnoreCase));
 
+        return vehicleAsset != null;
+    }
     public override UniTask ExecuteAsync()
     {
         Context.AssertOnDuty();
         Context.AssertPermission("vehicle");
         Context.AssertArguments(1);
         Context.AssertPlayer(out UnturnovPlayer self);
-        
-        Asset vehicleAsset = null;
-        var idSuccess = Context.TryParse(out ushort vId);
-        
-        if (idSuccess && vehicleAsset == null)
-        {
-            vehicleAsset = Assets.find(EAssetType.VEHICLE, vId);
-        }
-        
-        if (Context.TryParse(out Guid vGuid) && vehicleAsset == null)
-        {
-            vehicleAsset = Assets.find<VehicleAsset>(vGuid);
-        }
-        
-        if (GetVehicleAssetByName(Context.Current, out VehicleAsset? vAssetByName) && vehicleAsset == null && !idSuccess)
-        {
-            vehicleAsset = vAssetByName!;
-        }
-        
-        if (vehicleAsset == null)
+
+        if (!GetVehicleAsset(Context.Current, out VehicleAsset? vehicleAsset))
         {
             throw Context.Reply("Vehicle not found");
         }
-        
-        VehicleTool.SpawnVehicleForPlayer(self.Player, vehicleAsset);
-        throw Context.Reply("Spawning {0}", vehicleAsset.FriendlyName);
+            
+        VehicleTool.SpawnVehicleForPlayer(self.Player, vehicleAsset!);
+        throw Context.Reply("Spawning {0}", vehicleAsset!.FriendlyName);
     }
 }
