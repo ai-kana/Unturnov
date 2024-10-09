@@ -34,6 +34,8 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public CSteamID? LastPrivateMessage {get; set;} = null;
 
+    public string Language => SaveData.Language;
+
     public static async UniTask<UnturnovPlayer> CreateAsync(SteamPlayer player)
     {
         return new(player, await PlayerDataManager.LoadDataAsync(player.playerID.steamID));

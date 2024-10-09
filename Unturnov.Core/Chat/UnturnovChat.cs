@@ -8,6 +8,7 @@ using Unturnov.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Roles;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Chat;
 
@@ -130,6 +131,37 @@ public class UnturnovChat
     {
         IEnumerable<UnturnovPlayer> players = UnturnovPlayerManager.Players.Values;
         Broadcast(players, Formatter.Format(message, args));
+    }
+
+    public static void BroadcastMessage(UnturnovPlayer player, Translation translation, params object[] args)
+    {
+        Broadcast(player, Formatter.Format(translation.Translate(player), args));
+    }
+
+    public static void BroadcastMessage(IEnumerable<UnturnovPlayer> players, Translation translation, params object[] args)
+    {
+        Broadcast(players, translation, args);
+    }
+
+    public static void BroadcastMessage(Translation translation, params object[] args)
+    {
+        IEnumerable<UnturnovPlayer> players = UnturnovPlayerManager.Players.Values;
+        Broadcast(players, translation, args);
+    }
+
+    private static void Broadcast(IEnumerable<UnturnovPlayer> players, Translation translation, params object[] args)
+    {
+        foreach (UnturnovPlayer player in players)
+        {
+            Broadcast(player, translation, args);
+        }
+    }
+
+    private static void Broadcast(UnturnovPlayer player, Translation translation, params object[] args)
+    {
+        _Logger.LogInformation(Formatter.FormatNoColor(translation.Translate(), args));
+        string message = Formatter.Format(translation.Translate(player), args);
+        ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 
     private static void Broadcast(IEnumerable<UnturnovPlayer> players, string message)

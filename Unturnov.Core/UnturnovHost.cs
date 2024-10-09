@@ -9,7 +9,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Roles;
 using Unturnov.Core.Players;
-using System.Runtime.InteropServices;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core;
 
@@ -66,6 +66,8 @@ public sealed class UnturnovHost
 
         // Static ctor moment
         UnturnovPlayerManager.Players.Count();
+        await TranslationManager.LoadTranslations();
+        Translation test = new("Testing", "Default");
 
         _Harmony = new("Unturnov.Core");
         _Harmony.PatchAll();

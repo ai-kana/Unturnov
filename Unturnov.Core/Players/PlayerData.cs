@@ -13,4 +13,7 @@ public class PlayerData
     // long - Unix time stamp for end
     [JsonProperty]
     public Dictionary<string, long> Cooldowns {get; private set;} = new();
+
+    [JsonProperty]
+    public string Language = "English";
 }

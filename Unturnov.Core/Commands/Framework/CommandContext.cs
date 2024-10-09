@@ -1,5 +1,6 @@
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -29,6 +30,12 @@ public sealed class CommandContext
     public CommandExitedException Reply(string format, params object[] args)
     {
         Caller.SendMessage(format, args);
+        return new();
+    }
+
+    public CommandExitedException Reply(Translation translation, params object[] args)
+    {
+        Caller.SendMessage(translation.Translate(Caller.Language), args);
         return new();
     }
 

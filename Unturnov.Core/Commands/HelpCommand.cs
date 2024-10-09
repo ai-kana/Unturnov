@@ -1,6 +1,7 @@
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -11,6 +12,8 @@ public class HelpCommand : Command
     public HelpCommand(CommandContext context) : base(context)
     {
     }
+
+    private readonly Translation HelpFormat = new("HelpFormat", "{0}: {1}");
 
     public override UniTask ExecuteAsync()
     {
@@ -33,7 +36,7 @@ public class HelpCommand : Command
             content = syntax.Syntax;
         }
 
-        throw Context.Reply("{0}: {1}", command, content);
+        throw Context.Reply(HelpFormat, command, content);
     }
 }
 

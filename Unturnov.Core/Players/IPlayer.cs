@@ -8,4 +8,5 @@ public interface IPlayer
     public string LogName {get;}
     public CSteamID SteamID {get;}
     public void SendMessage(string format, params object[] args);
+    public string Language {get;}
 }

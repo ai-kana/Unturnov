@@ -11,6 +11,8 @@ public class ConsolePlayer : IPlayer
     public string LogName => "Console";
     public CSteamID SteamID => Provider.server;
 
+    public string Language => "English";
+
     private readonly ILogger _Logger;
 
     public void SendMessage(string format, params object[] args)
