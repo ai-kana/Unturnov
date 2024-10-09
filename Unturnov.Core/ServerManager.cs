@@ -28,7 +28,6 @@ public static class ServerManager
         UnturnovPlayerManager.KickAll("Server shutting down");
         OnPreShutdown?.Invoke();
         Provider.shutdown(0);
-        //MainThreadWorker.Enqueue(Provider.shutdown);
     }
 
     public static bool CancelShutdown()
