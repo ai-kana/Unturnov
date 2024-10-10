@@ -135,7 +135,7 @@ public class UnturnovChat
 
     public static void BroadcastMessage(UnturnovPlayer player, Translation translation, params object[] args)
     {
-        Broadcast(player, translation, args));
+        Broadcast(player, translation, args);
     }
 
     public static void BroadcastMessage(IEnumerable<UnturnovPlayer> players, Translation translation, params object[] args)

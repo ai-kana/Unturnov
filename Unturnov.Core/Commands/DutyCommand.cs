@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -23,7 +24,7 @@ public class DutyCommand : Command
         Context.AssertPlayer(out UnturnovPlayer caller);
 
         caller.OnDuty = !caller.OnDuty;
-        UnturnovChat.BroadcastMessage("{0} is now {1} duty", caller.Name, caller.OnDuty ? new TranslationPackage(On) : new TranslationPackage(Off));
+        UnturnovChat.BroadcastMessage(DutyState, caller.Name, caller.OnDuty ? new TranslationPackage(On) : new TranslationPackage(Off));
         throw Context.Exit;
     }
 }

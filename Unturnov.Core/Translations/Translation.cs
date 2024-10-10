@@ -1,6 +1,6 @@
 using Unturnov.Core.Players;
 using Unturnov.Core.Formatting;
-
+//using Unturnov.Core.Logging;
 
 namespace Unturnov.Core.Translations;
 
@@ -9,10 +9,13 @@ public class Translation
     private readonly string _DefaultValue;
     private readonly string _Key;
 
+    //private readonly ILogger _Logger;
+    
     public Translation(string key, string defaultValue)
     {
         _DefaultValue = defaultValue;
         _Key = key;
+        //_Logger = LoggerProvider.CreateLogger($"{typeof(Translation).FullName}.{key}");
         TranslationManager.AddTranslation(_Key, _DefaultValue);
     }
 
@@ -22,12 +25,13 @@ public class Translation
         for (int i = 0; i < args.Length; i++)
         {
             object arg = args[i];
+            
             if (arg is TranslationPackage translation)
             {
                 outArgs[i] = translation.Translate(language);
                 continue;
             }
-
+            
             outArgs[i] = arg.ToString();
         }
 
@@ -46,7 +50,7 @@ public class Translation
 
     public string Translate(string language, params object[] args)
     {
-        string[] fixedArgs = GetTranslatedArguments(args);
+        string[] fixedArgs = GetTranslatedArguments(language, args);
 
         if (language == "English")
         {
