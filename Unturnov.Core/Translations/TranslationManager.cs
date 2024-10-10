@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Unturnov.Core.Logging;
 
@@ -53,6 +54,7 @@ public class TranslationManager
 
             data.Path = path;
             TranslationData.Add(data);
+            _Logger.LogInformation($"Loaded translation for {data.LanguageTitle}");
         }
     }
 

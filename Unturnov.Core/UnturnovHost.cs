@@ -53,9 +53,6 @@ public sealed class UnturnovHost
         Directory.SetCurrentDirectory(AppContext.BaseDirectory + "/Unturnov");
         Configuration = await CreateConfigurationAsync();
 
-        string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
-        LogLevel allowedLevel = Enum.Parse<LogLevel>(level);
-
         LoggerProvider.AddLogging(new UnturnovLoggerProvider($"./Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
@@ -67,7 +64,6 @@ public sealed class UnturnovHost
         // Static ctor moment
         UnturnovPlayerManager.Players.Count();
         await TranslationManager.LoadTranslations();
-        Translation test = new("Testing", "Default");
 
         _Harmony = new("Unturnov.Core");
         _Harmony.PatchAll();

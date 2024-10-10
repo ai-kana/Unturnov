@@ -56,11 +56,18 @@ public class UnturnovPlayerManager
         shouldAllow = !player?.Life.GodMode ?? true;
     }
 
+    private static IEnumerable<UnturnovPlayer> GetPlayerListCopy()
+    {
+        foreach (UnturnovPlayer player in Players.Values)
+        {
+            yield return player;
+        }
+    }
+
     public static void KickAll(string reason)
     {
-        while (Players.Count > 0)
+        foreach (UnturnovPlayer player in GetPlayerListCopy())
         {
-            Players.TryRemove(Players.Keys.First(), out UnturnovPlayer player);
             player.Kick(reason);
         }
     }
