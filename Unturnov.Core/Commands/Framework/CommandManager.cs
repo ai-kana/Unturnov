@@ -14,7 +14,7 @@ public class CommandManager
     static CommandManager()
     {
         _Logger = LoggerProvider.CreateLogger<CommandManager>();
-        ThreadConsole.OnInputCommitted += OnInput;
+        ThreadConsole.inputCommitted += OnInput;
         _CommandTypes = new();
     }
 

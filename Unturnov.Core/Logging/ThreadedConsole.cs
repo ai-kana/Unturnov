@@ -14,11 +14,7 @@ public class ThreadConsole : ICommandInputOutput
 
     private Thread? _Thread;
 
-    // OOP moment
-#pragma warning disable CS0067
     public event CommandInputHandler? inputCommitted;
-#pragma warning restore CS0067
-    public static event InputCommited? OnInputCommitted;
 
     public void initialize(CommandWindow commandWindow)
     {
@@ -104,7 +100,7 @@ public class ThreadConsole : ICommandInputOutput
         string text = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(text))
         {
-            OnInputCommitted?.Invoke(text);
+            inputCommitted?.Invoke(text);
         }
     }
 
