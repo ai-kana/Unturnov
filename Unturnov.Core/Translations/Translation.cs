@@ -64,4 +64,21 @@ public class Translation
 
         return Formatter.Format(value, fixedArgs);
     }
+
+    public string TranslateNoColor(string language, params object[] args)
+    {
+        string[] fixedArgs = GetTranslatedArguments(language, args);
+
+        if (language == "English")
+        {
+            return Formatter.FormatNoColor(_DefaultValue, fixedArgs);
+        }
+
+        if (!TranslationManager.TryGetTranslation(language, _Key, out string value))
+        {
+            return Formatter.FormatNoColor(_DefaultValue, fixedArgs);
+        }
+
+        return Formatter.Format(value, fixedArgs);
+    }
 }

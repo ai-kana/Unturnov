@@ -13,6 +13,6 @@ public class TranslationPackage
 
     public string Translate(string language)
     {
-        return _Translation.Translate(language, _Arguments);
+        return _Translation.TranslateNoColor(language, _Arguments);
     }
 }
