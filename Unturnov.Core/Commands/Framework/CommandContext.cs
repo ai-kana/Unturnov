@@ -35,7 +35,7 @@ public sealed class CommandContext
 
     public CommandExitedException Reply(Translation translation, params object[] args)
     {
-        Caller.SendMessage(translation.Translate(Caller.Language), args);
+        Caller.SendMessage(translation.Translate(Caller.Language, args));
         return new();
     }
 

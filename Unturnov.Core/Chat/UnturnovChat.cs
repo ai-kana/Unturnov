@@ -135,7 +135,7 @@ public class UnturnovChat
 
     public static void BroadcastMessage(UnturnovPlayer player, Translation translation, params object[] args)
     {
-        Broadcast(player, Formatter.Format(translation.Translate(player), args));
+        Broadcast(player, translation, args));
     }
 
     public static void BroadcastMessage(IEnumerable<UnturnovPlayer> players, Translation translation, params object[] args)
@@ -159,8 +159,8 @@ public class UnturnovChat
 
     private static void Broadcast(UnturnovPlayer player, Translation translation, params object[] args)
     {
-        _Logger.LogInformation(Formatter.FormatNoColor(translation.Translate(), args));
-        string message = Formatter.Format(translation.Translate(player), args);
+        _Logger.LogInformation(translation.Translate(player, args));
+        string message = translation.Translate(player, args);
         ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 

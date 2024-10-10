@@ -1,4 +1,6 @@
 using Unturnov.Core.Players;
+using Unturnov.Core.Formatting;
+
 
 namespace Unturnov.Core.Translations;
 
@@ -14,28 +16,48 @@ public class Translation
         TranslationManager.AddTranslation(_Key, _DefaultValue);
     }
 
-    public string Translate()
+    private string[] GetTranslatedArguments(string language, object[] args)
     {
-        return _DefaultValue;
+        string[] outArgs = new string[args.Length];
+        for (int i = 0; i < args.Length; i++)
+        {
+            object arg = args[i];
+            if (arg is TranslationPackage translation)
+            {
+                outArgs[i] = translation.Translate(language);
+                continue;
+            }
+
+            outArgs[i] = arg.ToString();
+        }
+
+        return outArgs;
     }
 
-    public string Translate(string language)
+    public string Translate(params object[] args)
     {
+        return Translate("English", args);
+    }
+
+    public string Translate(UnturnovPlayer player, params object[] args)
+    {
+        return Translate(player.Language, args);
+    }
+
+    public string Translate(string language, params object[] args)
+    {
+        string[] fixedArgs = GetTranslatedArguments(args);
+
         if (language == "English")
         {
-            return _DefaultValue;
+            return Formatter.Format(_DefaultValue, fixedArgs);
         }
 
         if (!TranslationManager.TryGetTranslation(language, _Key, out string value))
         {
-            return _DefaultValue;
+            return Formatter.Format(_DefaultValue, fixedArgs);
         }
 
-        return value;
-    }
-
-    public string Translate(UnturnovPlayer player)
-    {
-        return Translate(player.Language);
+        return Formatter.Format(value, fixedArgs);
     }
 }
