@@ -79,6 +79,6 @@ public class Translation
             return Formatter.FormatNoColor(_DefaultValue, fixedArgs);
         }
 
-        return Formatter.Format(value, fixedArgs);
+        return Formatter.FormatNoColor(value, fixedArgs);
     }
 }
