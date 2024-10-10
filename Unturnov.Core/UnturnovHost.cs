@@ -57,9 +57,13 @@ public sealed class UnturnovHost
         _Logger = LoggerProvider.CreateLogger<UnturnovHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
 
-        ThreadConsole console = new();
-        Dedicator.commandWindow?.removeDefaultIOHandler();
-        Dedicator.commandWindow?.addIOHandler(console);
+        // Windows no liekly console
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            ThreadConsole console = new();
+            Dedicator.commandWindow?.removeDefaultIOHandler();
+            Dedicator.commandWindow?.addIOHandler(console);
+        }
 
         // Static ctor moment
         UnturnovPlayerManager.Players.Count();
