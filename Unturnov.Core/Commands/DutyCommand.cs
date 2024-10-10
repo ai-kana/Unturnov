@@ -13,13 +13,17 @@ public class DutyCommand : Command
     {
     }
 
+    private static readonly Translation DutyState = new("DutyState", "{0} is now {1} duty");
+    private static readonly Translation On = new("On", "on");
+    private static readonly Translation Off = new("Off", "off");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
         caller.OnDuty = !caller.OnDuty;
-        UnturnovChat.BroadcastMessage("{0} is now {1} duty", caller.Name, caller.OnDuty ? "on" : "off");
+        UnturnovChat.BroadcastMessage("{0} is now {1} duty", caller.Name, caller.OnDuty ? new TranslationPackage(On) : new TranslationPackage(Off));
         throw Context.Exit;
     }
 }
