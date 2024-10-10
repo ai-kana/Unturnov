@@ -31,6 +31,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public readonly UnturnovPlayerCooldowns Cooldowns;
     public readonly UnturnovPlayerSkills Skills;
     public readonly UnturnovPlayerInventory Inventory;
+    public readonly UnturnovPlayerClothing Clothing;
 
     public CSteamID? LastPrivateMessage {get; set;} = null;
 
@@ -55,6 +56,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
         Cooldowns = new(this);
         Skills = new(this);
         Inventory = new(this);
+        Clothing = new(this);
     }
 
     public void SendMessage(string format, params object[] args)

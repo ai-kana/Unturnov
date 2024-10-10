@@ -52,4 +52,28 @@ public class UnturnovPlayerInventory
             GiveItem(id, amount, quality, state);
         }
     }
+    
+    public bool ClearInventory()
+    {
+        for (int page = 0; page < PlayerInventory.PAGES - 2; page++)
+        {
+            int count = _Inventory.getItemCount((byte)page);
+            if(count == 0) continue;
+
+            for (int index = 0; index < count; index++)
+            {
+                _Inventory.removeItem((byte)page, 0);
+            }
+        }
+        
+        return true;
+    }
+    
+    public void ClearHands() 
+    {
+        for (byte itemCount = 0; itemCount < _Inventory.getItemCount(2); itemCount++)
+        {
+            _Inventory.removeItem(2, 0);
+        }
+    }
 }
