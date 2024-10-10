@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using SDG.Unturned;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Players;
 
@@ -14,7 +15,7 @@ public class CommandManager
     static CommandManager()
     {
         _Logger = LoggerProvider.CreateLogger<CommandManager>();
-        ThreadConsole.inputCommitted += OnInput;
+        CommandWindow.onCommandWindowInputted += OnInput;
         _CommandTypes = new();
     }
 
@@ -128,8 +129,9 @@ public class CommandManager
         }
     }
 
-    private static void OnInput(string message)
+    private static void OnInput(string message, ref bool shouldExecuteCommand)
     {
+        shouldExecuteCommand = false;
         ExecuteCommand(message, new ConsolePlayer());
     }
 }
