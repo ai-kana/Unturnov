@@ -14,8 +14,8 @@ public class FreezeCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("freeze");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
         
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -11,7 +12,10 @@ public class PositionCommand : Command
     public PositionCommand(CommandContext context) : base(context)
     {
     }
-
+    
+    private static readonly Translation SelfPosition = new("PositionSelf", "You are at: {0} | {1} | {2}");
+    private static readonly Translation TargetPosition = new("PositionTarget", "{0} is at: {1} | {2} | {3}");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertOnDuty();
@@ -27,7 +31,7 @@ public class PositionCommand : Command
             y = self.Movement.Position.y.ToString("F1");
             z = self.Movement.Position.z.ToString("F1");
             
-            throw Context.Reply("You are at: {0} | {1} | {2}", x, y, z);
+            throw Context.Reply(SelfPosition, x, y, z);
         }
         
         Context.AssertArguments(1);
@@ -37,6 +41,6 @@ public class PositionCommand : Command
         y = target.Movement.Position.y.ToString("F1");
         z = target.Movement.Position.z.ToString("F1");
         
-        throw Context.Reply("{0} is at: {1} | {2} | {3}", target.Name, x, y, z);
+        throw Context.Reply(TargetPosition, target.Name, x, y, z);
     }
 }

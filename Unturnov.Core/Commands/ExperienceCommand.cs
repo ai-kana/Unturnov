@@ -14,8 +14,8 @@ public class ExperienceCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("experience");
+        Context.AssertOnDuty();
         throw Context.Reply("<add | remove | set | check>");
     }
 }
@@ -32,6 +32,7 @@ public class ExperienceAddCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
@@ -66,6 +67,7 @@ public class ExperienceRemoveCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
@@ -100,6 +102,7 @@ public class ExperienceSetCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
@@ -134,6 +137,7 @@ public class ExperienceCheckCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();

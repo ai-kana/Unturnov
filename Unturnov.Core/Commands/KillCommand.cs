@@ -15,8 +15,8 @@ public class KillCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("kill");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
         
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();

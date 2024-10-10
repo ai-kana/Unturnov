@@ -31,9 +31,8 @@ public class TimeGetCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("time");
-        Context.AssertArguments(0);
+        Context.AssertOnDuty();
         
         byte hour = (byte)(LightingManager.time / 150);
         byte minutes = (byte)((LightingManager.time % 150) / 2.5);
@@ -60,8 +59,8 @@ public class TimeSetCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("time");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
 
         uint time = Context.Parse<uint>();
@@ -81,8 +80,8 @@ public class TimeDayCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("time");
+        Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * LevelLighting.transition);
         throw Context.Reply("Time set to {0}", "Day");
@@ -99,8 +98,8 @@ public class TimeNightCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("time");
+        Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * (LevelLighting.bias + LevelLighting.transition));
         throw Context.Reply("Time set to {0}", "Night");

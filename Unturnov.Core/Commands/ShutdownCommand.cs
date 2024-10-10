@@ -14,8 +14,8 @@ public class ShutdownCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("shutdown");
+        Context.AssertOnDuty();
 
         uint delay = 0;
         if (Context.HasArguments(1))
@@ -38,8 +38,8 @@ public class ShutdownCancelCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("shutdown");
+        Context.AssertOnDuty();
 
         if (!ServerManager.CancelShutdown())
         {

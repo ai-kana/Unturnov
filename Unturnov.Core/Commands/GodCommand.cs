@@ -15,6 +15,7 @@ public class GodCommand : Command
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("god");
+        Context.AssertOnDuty();
         Context.AssertPlayer(out UnturnovPlayer caller);
 
         if (Context.HasArguments(1))

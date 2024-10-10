@@ -16,8 +16,6 @@ public class MovementCommand : Command
         Context.AssertPermission("movement");
         Context.AssertOnDuty();
         
-        //If you think of a better way to do this, please go ahead;
-        //Yes I will
         throw Context.Reply("<[player?]> <[speed,s | jump,j | gravity,g | all,a]> <[value] | reset, r>");
     }
 }
@@ -32,8 +30,8 @@ public class MovementSpeedCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("movement");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
 
         UnturnovPlayer target;
@@ -65,8 +63,8 @@ public class MovementJumpCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("movement");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
 
         UnturnovPlayer target;
@@ -98,8 +96,8 @@ public class MovementGravityCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("movement");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
 
         UnturnovPlayer target;

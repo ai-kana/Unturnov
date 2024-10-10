@@ -47,8 +47,8 @@ public class VehicleCommand : Command
     }
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("vehicle");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
         Context.AssertPlayer(out UnturnovPlayer self);
 

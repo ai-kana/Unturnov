@@ -15,6 +15,7 @@ public class PrivateMessageCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPermission("pm");
         Context.AssertArguments(2);
         Context.AssertPlayer(out UnturnovPlayer self);
         

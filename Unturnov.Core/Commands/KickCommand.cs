@@ -15,8 +15,8 @@ public class KickCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("kick");
+        Context.AssertOnDuty();
         Context.AssertArguments(1);
         
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();

@@ -14,8 +14,8 @@ public class WarnCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("warn");
+        Context.AssertOnDuty();
         
         throw Context.Reply("<add | remove | list>");
     }
@@ -29,8 +29,8 @@ public class WarnAddCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("warn.add");
+        Context.AssertOnDuty();
         Context.AssertArguments(2);
         Context.AssertPlayer(out UnturnovPlayer self);
         
@@ -52,8 +52,8 @@ public class WarnRemoveCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("warn.remove");
+        Context.AssertOnDuty();
         
         Context.AssertArguments(2);
         Context.AssertPlayer(out UnturnovPlayer self);
@@ -79,8 +79,8 @@ public class WarnListCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertOnDuty();
         Context.AssertPermission("warn.list");
+        Context.AssertOnDuty();
         
         throw Context.Reply("Not Implemented Yet.");
     }
