@@ -19,12 +19,12 @@ public class CommandManager
         _CommandTypes = new();
     }
 
-    private static void TryRegisterCommand(string name, CommandTypeData type)
+    private static void TryRegisterCommand(string name, CommandTypeData type, bool isAlias)
     {
         string fixedName = name.ToLower();
         if (_CommandTypes.TryAdd(fixedName, type))
         {
-            _Logger.LogInformation($"Registered command {fixedName}");
+            _Logger.LogInformation(isAlias ? $"Register command alias {fixedName}" : $"Registered command {fixedName}");
             return;
         }
 
@@ -60,10 +60,10 @@ public class CommandManager
             }
 
             CommandTypeData data = new(type, assembly);
-            TryRegisterCommand(commandData.Name, data);
+            TryRegisterCommand(commandData.Name, data, false);
             foreach (string name in commandData.Aliases)
             {
-                TryRegisterCommand(name, data);
+                TryRegisterCommand(name, data, true);
             }
         }
     }
