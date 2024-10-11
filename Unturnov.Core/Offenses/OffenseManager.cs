@@ -111,13 +111,7 @@ public class OffenseManager
         command.Parameters.Add("@offender", MySqlDbType.UInt64).Value = offender.m_SteamID;
         await using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
-        List<Offense> ret = new();
-        while (await reader.ReadAsync())
-        {
-            ret.Add(ReadOffense(reader));
-        }
-
-        return ret;
+        return await ReadOffenses(reader);
     }
 
     private const string AddOffenseCommand = 
