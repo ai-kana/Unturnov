@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -25,7 +26,7 @@ public class VehicleCommand : Command
 
         List<VehicleAsset> vehicleAssetsList = new();
         Assets.find(vehicleAssetsList);
-
+        
         if (ushort.TryParse(input, out ushort id))
         {
             if (id == 0)
@@ -41,7 +42,7 @@ public class VehicleCommand : Command
         vehicleAsset = vehicleAssetsList.FirstOrDefault(i =>
             i.vehicleName.Contains(input, StringComparison.InvariantCultureIgnoreCase) ||
             i.name.Contains(input, StringComparison.InvariantCultureIgnoreCase) ||
-            i.name.Contains(input, StringComparison.InvariantCultureIgnoreCase));
+            i.FriendlyName.Contains(input, StringComparison.InvariantCultureIgnoreCase));
 
         return vehicleAsset != null;
     }
@@ -54,10 +55,10 @@ public class VehicleCommand : Command
 
         if (!GetVehicleAsset(Context.Current, out VehicleAsset? vehicleAsset))
         {
-            throw Context.Reply("Vehicle not found");
+            throw Context.Reply(TranslationList.VehicleNotFound);
         }
             
         VehicleTool.SpawnVehicleForPlayer(self.Player, vehicleAsset!);
-        throw Context.Reply("Spawning {0}", vehicleAsset!.FriendlyName);
+        throw Context.Reply(TranslationList.SpawningVehicle, vehicleAsset!.FriendlyName);
     }
 }

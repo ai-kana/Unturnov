@@ -2,10 +2,11 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
-[CommandData("reply")]
+[CommandData("reply", "r")]
 [CommandSyntax("<[message]>")]
 public class ReplyCommand : Command
 {
@@ -24,12 +25,12 @@ public class ReplyCommand : Command
         
         if(self.LastPrivateMessage == null) 
         {
-            throw Context.Reply("You have no one to reply to");
+            throw Context.Reply(TranslationList.NoOneToReplyTo);
         }
 
         if (!UnturnovPlayerManager.TryGetPlayer(self.LastPrivateMessage.Value, out UnturnovPlayer target))
         {
-            throw Context.Reply("The player you are trying to reply to is not online");
+            throw Context.Reply(TranslationList.PlayerNotOnline);
         }
         
         target.LastPrivateMessage = self.SteamID;

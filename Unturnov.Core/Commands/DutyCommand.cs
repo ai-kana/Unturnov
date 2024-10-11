@@ -13,18 +13,14 @@ public class DutyCommand : Command
     public DutyCommand(CommandContext context) : base(context)
     {
     }
-
-    private static readonly Translation DutyState = new("DutyState", "{0} is now {1} duty");
-    private static readonly Translation On = new("On", "on");
-    private static readonly Translation Off = new("Off", "off");
-
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
         caller.OnDuty = !caller.OnDuty;
-        UnturnovChat.BroadcastMessage(DutyState, caller.Name, caller.OnDuty ? new TranslationPackage(On) : new TranslationPackage(Off));
+        UnturnovChat.BroadcastMessage(TranslationList.DutyStateGlobal, caller.Name, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
         throw Context.Exit;
     }
 }
@@ -43,7 +39,7 @@ public class DutySlientCommand : Command
         Context.AssertPlayer(out UnturnovPlayer caller);
 
         caller.OnDuty = !caller.OnDuty;
-        throw Context.Reply("You are now {0} duty", caller.OnDuty ? "on" : "off");
+        throw Context.Reply(TranslationList.DutyStateSilent, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
     }
 }
 
@@ -60,6 +56,6 @@ public class DutyCheckCommand : Command
         Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
-        throw Context.Reply("You are {0} duty", caller.OnDuty ? "on" : "off");
+        throw Context.Reply(TranslationList.DutyStateCheck, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
     }
 }

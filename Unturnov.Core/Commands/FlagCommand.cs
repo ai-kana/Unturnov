@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -24,7 +25,7 @@ public class FlagCommand : Command
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("get")]
-[CommandSyntax("<[player]> <[flag]>")]
+[CommandSyntax("<[player] [flag]>")]
 public class FlagGetCommand : Command
 {
     public FlagGetCommand(CommandContext context) : base(context)
@@ -41,24 +42,24 @@ public class FlagGetCommand : Command
         Context.MoveNext();
         ushort flag = Context.Parse<ushort>();
 
-        if (flag == 0)
+        if (flag <= 0)
         {
-            throw Context.Reply("Flag value must be greater than 0");
+            throw Context.Reply(TranslationList.GreaterThanZero);
         }
 
         if (!player.Quests.FlagExists(flag))
         {
-            throw Context.Reply("Player {0} does not have flag {1}", player.Name, flag);
+            throw Context.Reply(TranslationList.FlagDoesNotExist, player.Name, flag);
         }
         
         player.Quests.TryGetFlag(flag, out short value);
-        throw Context.Reply("Flag {0} for {1} is {2}", flag, player.Name, value);
+        throw Context.Reply(TranslationList.FlagGet, flag, player.Name, value);
     }
 }
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("set")]
-[CommandSyntax("<[player]> <[flag]> <[value]>")]
+[CommandSyntax("<[player] [flag] [value]>")]
 public class FlagSetCommand : Command
 {
     public FlagSetCommand(CommandContext context) : base(context)
@@ -78,13 +79,13 @@ public class FlagSetCommand : Command
         short value = Context.Parse<short>();
 
         player.Quests.SetFlag(flag, value);
-        throw Context.Reply("Set flag {0} for {1} to {2}", flag, player.Name, value);
+        throw Context.Reply(TranslationList.FlagSet, flag, player.Name, value);
     }
 }
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("unset")]
-[CommandSyntax("<[player]> <[flag]>")]
+[CommandSyntax("<[player] [flag]>")]
 public class FlagUnsetCommand : Command
 {
     public FlagUnsetCommand(CommandContext context) : base(context)
@@ -103,10 +104,10 @@ public class FlagUnsetCommand : Command
 
         if (!player.Quests.FlagExists(flag))
         {
-            throw Context.Reply("Player {0} does not have flag {1}", player.Name, flag);
+            throw Context.Reply(TranslationList.FlagDoesNotExist, player.Name, flag);
         }
         
         player.Quests.RemoveFlag(flag);
-        throw Context.Reply("Unset flag {0} for {1}", flag, player.Name);
+        throw Context.Reply(TranslationList.FlagUnset, flag, player.Name);
     }
 }

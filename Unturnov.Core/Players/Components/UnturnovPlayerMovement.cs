@@ -10,6 +10,8 @@ public class UnturnovPlayerMovement
     public Quaternion Rotation => Owner.Player.transform.rotation;
 
     private PlayerMovement _PlayerMovement => Owner.Player.movement;
+
+    public bool IsFrozen = false;
     
     public UnturnovPlayerMovement(UnturnovPlayer owner)
     {
@@ -78,6 +80,7 @@ public class UnturnovPlayerMovement
 
     public void Freeze()
     {
+        IsFrozen = true;
         SetSpeed(0f);
         SetJump(0f);
         SetGravity(0f);
@@ -86,6 +89,7 @@ public class UnturnovPlayerMovement
 
     public void Unfreeze()
     {
+        IsFrozen = false;
         ResetSpeed();
         ResetJump();
         ResetGravity();

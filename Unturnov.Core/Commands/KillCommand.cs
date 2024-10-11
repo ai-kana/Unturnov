@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -22,6 +23,6 @@ public class KillCommand : Command
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
         
         target.Life.Kill();
-        throw Context.Reply("Killed {0}", target.Name);
+        throw Context.Reply(TranslationList.Killed, target.Name);
     }
 }

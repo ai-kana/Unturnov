@@ -5,6 +5,7 @@ using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
 

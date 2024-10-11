@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -19,13 +20,13 @@ public class HealCommand : Command
         if (Context.HasExactArguments(1))
         {
             Context.AssertPermission("heal.other");
-            UnturnovPlayer other = Context.Parse<UnturnovPlayer>();
-            other.Life.Heal();
-            throw Context.Reply("Successfully healed {0}", other.Name);
+            UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
+            target.Life.Heal();
+            throw Context.Reply(TranslationList.HealedOther, target.Name);
         }
         
-        Context.AssertPlayer(out UnturnovPlayer callerPlayer);
-        callerPlayer.Life.Heal();
-        throw Context.Reply("Successfully healed yourself");
+        Context.AssertPlayer(out UnturnovPlayer self);
+        self.Life.Heal();
+        throw Context.Reply(TranslationList.HealedSelf);
     }
 }

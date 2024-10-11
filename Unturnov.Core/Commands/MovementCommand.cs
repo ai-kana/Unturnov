@@ -1,10 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
 [CommandData("movement", "move")]
+[CommandSyntax("<[speed,s | jump,j | gravity,g]> <[value] | reset, r>")]
 public class MovementCommand : Command
 {
     public MovementCommand(CommandContext context) : base(context)
@@ -16,7 +18,7 @@ public class MovementCommand : Command
         Context.AssertPermission("movement");
         Context.AssertOnDuty();
         
-        throw Context.Reply("<[player?]> <[speed,s | jump,j | gravity,g | all,a]> <[value] | reset, r>");
+        throw Context.Reply("<[speed,s | jump,j | gravity,g]> <[value] | reset, r>");
     }
 }
 
@@ -48,8 +50,8 @@ public class MovementSpeedCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetSpeed(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply("Set {0}'s movement speed to {1}", target.Name, multiplier)
-            : Context.Reply("Set your movement speed to {0}", multiplier);
+            Context.Reply(TranslationList.SetSpeedOther, target.Name, multiplier)
+            : Context.Reply(TranslationList.SetSpeedSelf, multiplier);
     }
 }
 
@@ -81,8 +83,8 @@ public class MovementJumpCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetJump(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply("Set {0}'s jump height to {1}", target.Name, multiplier)
-            : Context.Reply("Set your jump height to {0}", multiplier);
+            Context.Reply(TranslationList.SetJumpOther, target.Name, multiplier)
+            : Context.Reply(TranslationList.SetJumpSelf, multiplier);
     }
 }
 
@@ -114,7 +116,7 @@ public class MovementGravityCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetGravity(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply("Set {0}'s gravity to {1}", target.Name, multiplier)
-            : Context.Reply("Set your gravity to {0}", multiplier);
+            Context.Reply(TranslationList.SetGravityOther, target.Name, multiplier)
+            : Context.Reply(TranslationList.SetGravitySelf, multiplier);
     }
 }

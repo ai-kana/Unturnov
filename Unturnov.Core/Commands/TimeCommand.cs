@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Commands.Framework;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -44,7 +45,7 @@ public class TimeGetCommand : Command
         
         string time = $"{hour:00}:{minutes:00}";
 
-        throw Context.Reply("Current time is {0} ({1})", time, LightingManager.time);
+        throw Context.Reply(TranslationList.CurrentTime, time, LightingManager.time);
     }
 }
 
@@ -66,7 +67,7 @@ public class TimeSetCommand : Command
         uint time = Context.Parse<uint>();
         
         LightingManager.time = time;
-        throw Context.Reply("Time set to {0}", time);       
+        throw Context.Reply(TranslationList.TimeSet, time);       
     }
 }
 
@@ -84,7 +85,7 @@ public class TimeDayCommand : Command
         Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * LevelLighting.transition);
-        throw Context.Reply("Time set to {0}", "Day");
+        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.Day));
     }
 }
 
@@ -102,6 +103,6 @@ public class TimeNightCommand : Command
         Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * (LevelLighting.bias + LevelLighting.transition));
-        throw Context.Reply("Time set to {0}", "Night");
+        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.Night));
     }
 }

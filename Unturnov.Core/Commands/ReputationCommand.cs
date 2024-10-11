@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -36,7 +37,7 @@ public class ReputationGetCommand : Command
         
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
 
-        throw Context.Reply("{0}'s reputation is {1}.", target.Name, target.Quests.Reputation);
+        throw Context.Reply(TranslationList.CheckedReputation, target.Name, target.Quests.Reputation);
     }
 }
 
@@ -60,7 +61,7 @@ public class ReputationSetCommand : Command
 
         target.Quests.SetReputation(reputation);
         
-        throw Context.Reply("Set {0}'s reputation to {1}.", target.Name, reputation);
+        throw Context.Reply(TranslationList.SetReputation, target.Name, reputation);
     }
 }
 
@@ -82,7 +83,7 @@ public class ReputationResetCommand : Command
 
         target.Quests.SetReputation(0);
         
-        throw Context.Reply("Reset {0}'s reputation.", target.Name);
+        throw Context.Reply(TranslationList.ResetReputation, target.Name);
     }
 }
 
@@ -106,7 +107,7 @@ public class ReputationAddCommand : Command
 
         target.Quests.GiveReputation(reputation);
         
-        throw Context.Reply("Added {0} reputation to {1}.", reputation, target.Name);
+        throw Context.Reply(TranslationList.AddedReputation, reputation, target.Name);
     }
 }
 
@@ -130,6 +131,6 @@ public class ReputationTakeCommand : Command
 
         target.Quests.RemoveReputation(reputation);
         
-        throw Context.Reply("Took {0} reputation from {1}.", reputation, target.Name);
+        throw Context.Reply(TranslationList.TookReputation, reputation, target.Name);
     }
 }

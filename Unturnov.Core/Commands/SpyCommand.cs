@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -23,6 +24,6 @@ public class SpyCommand : Command
         UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
         
         target.Spy(self.SteamID);
-        throw Context.Reply("Spying on {0}", target.Name);
+        throw Context.Reply(TranslationList.SpyingOn, target.Name);
     }
 }

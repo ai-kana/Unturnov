@@ -4,6 +4,7 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -43,11 +44,11 @@ public class ClearGroundCommand : Command
             Context.AssertPlayer(out UnturnovPlayer self);
             ItemManager.ServerClearItemsInSphere(self.Movement.Position, distance);
             //@0x5bc2 - Kana said to leave a comment here so she can make this more efficient :D
-            throw Context.Reply("Cleared items within {0} meters", distance);
+            throw Context.Reply(TranslationList.ClearedGroundDistance, distance);
         }
         
         ItemManager.askClearAllItems();
-        throw Context.Reply("Cleared ground");
+        throw Context.Reply(TranslationList.ClearedGround);
     }
 }
 
@@ -59,7 +60,6 @@ public class ClearInventoryCommand : Command
     public ClearInventoryCommand(CommandContext context) : base(context)
     {
     }
-
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("clear");
@@ -70,16 +70,16 @@ public class ClearInventoryCommand : Command
             Context.AssertPermission("clear.other");
             
             if(target.Inventory.ClearInventory() && target.Clothing.ClearClothes())
-                throw Context.Reply("Cleared {0}'s inventory", target.Name);
+                throw Context.Reply(TranslationList.ClearedInventoryOther, target.Name);
 
-            throw Context.Reply("Failed to clear {0}'s inventory", target.Name);
+            throw Context.Reply(TranslationList.FailedToClearInventoryOther, target.Name);
         }
         
         Context.AssertPlayer(out UnturnovPlayer self);
         
         if(self.Inventory.ClearInventory() && self.Clothing.ClearClothes())
-            throw Context.Reply("Cleared inventory");
+            throw Context.Reply(TranslationList.ClearedInventorySelf);
         
-        throw Context.Reply("Failed to clear inventory");
+        throw Context.Reply(TranslationList.FailedToClearInventorySelf);
     }
 }

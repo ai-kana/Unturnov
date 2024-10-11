@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -20,7 +21,10 @@ public class FreezeCommand : Command
         
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
         
+        if(player.Movement.IsFrozen)
+            throw Context.Reply(TranslationList.PlayerAlreadyFrozen, player.Name);
+        
         player.Movement.Freeze();
-        throw Context.Reply("Successfully froze {0}", player.Name);
+        throw Context.Reply(TranslationList.PlayerFrozen, player.Name);
     }
 }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -54,7 +55,7 @@ public class ItemCommand : Command
 
         if (!GetItemAsset(Context.Current, out ItemAsset? itemAsset))
         {
-            throw Context.Reply("Item not found");
+            throw Context.Reply(TranslationList.ItemNotFound);
         }
         
         if (Context.HasExactArguments(2))
@@ -63,15 +64,14 @@ public class ItemCommand : Command
 
             if (!Context.TryParse(out ushort count))
             {
-                throw Context.Reply("Invalid amount");
+                throw Context.Reply(TranslationList.BadNumber);
             }
                 
             self.Inventory.GiveItems(itemAsset!.id, count);
-            throw Context.Reply("You have received {0}x {1} ({2})", count, itemAsset.FriendlyName, itemAsset.id);
-
+            throw Context.Reply(TranslationList.ItemSelfAmount, count, itemAsset.FriendlyName, itemAsset.id);
         }
             
         self.Inventory.GiveItem(itemAsset!.id);
-        throw Context.Reply("You have received {0} ({1})", itemAsset.FriendlyName, itemAsset.id);
+        throw Context.Reply(TranslationList.ItemSelf, itemAsset.FriendlyName, itemAsset.id);
     }
 }

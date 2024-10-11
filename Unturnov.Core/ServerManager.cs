@@ -3,6 +3,7 @@ using SDG.Unturned;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core;
 
@@ -25,7 +26,7 @@ public static class ServerManager
     public static void Shutdown()
     {
         DoSave();
-        UnturnovPlayerManager.KickAll("Server shutting down");
+        UnturnovPlayerManager.KickAll("Server shutting down"); //Perhaps translate this message too?
         OnPreShutdown?.Invoke();
         Provider.shutdown(0);
     }
@@ -50,7 +51,7 @@ public static class ServerManager
     private static async Task DoShutdown(uint delay, CancellationToken token)
     {
         bool first = false;
-        UnturnovChat.BroadcastMessage("Server will shutdown in {0}", Formatter.FormatTime(delay));
+        UnturnovChat.BroadcastMessage(TranslationList.Shutdown, Formatter.FormatTime(delay));
         for (; delay > 0; delay--)
         {
             if (first)
@@ -61,7 +62,7 @@ public static class ServerManager
                     case 30:
                     case 10:
                     case < 5:
-                        UnturnovChat.BroadcastMessage("Server will shutdown in {0}", Formatter.FormatTime(delay));
+                        UnturnovChat.BroadcastMessage(TranslationList.Shutdown, Formatter.FormatTime(delay));
                         break;
                 }
             }

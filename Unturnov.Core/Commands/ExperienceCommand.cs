@@ -1,15 +1,21 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
 [CommandData("experience", "exp", "xp")]
-[CommandSyntax("<[add | remove | set | check]>")]
+[CommandSyntax("<[add,a | remove,r | set,s | reset | check,c]>")]
 public class ExperienceCommand : Command
 {
     public ExperienceCommand (CommandContext context) : base(context)
     {
+    }
+    
+    public static bool IsXpValid(uint xp)
+    {
+        return xp is > 0 and < uint.MaxValue;
     }
 
     public override UniTask ExecuteAsync()
@@ -39,19 +45,14 @@ public class ExperienceAddCommand : Command
         Context.MoveNext();
         uint amount = Context.Parse<uint>();
 
-        if (amount == 0)
+        if (!ExperienceCommand.IsXpValid(amount))
         {
-            throw Context.Reply("Amount must be greater than 0");
-        }
-        
-        if(amount >= uint.MaxValue)
-        {
-            throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
+            throw Context.Reply(TranslationList.BadNumber);
         }
         
         player.Skills.GiveExperience(amount);
         
-        throw Context.Reply("Added {0} experience to {1}", amount, player.Name);
+        throw Context.Reply(TranslationList.AddedExperience, amount, player.Name);
     }
 }
 
@@ -74,19 +75,36 @@ public class ExperienceRemoveCommand : Command
         Context.MoveNext();
         uint amount = Context.Parse<uint>();
 
-        if (amount <= 0)
+        if (!ExperienceCommand.IsXpValid(amount))
         {
-            throw Context.Reply("Amount must be greater than 0");
-        }
-        
-        if(amount >= uint.MaxValue)
-        {
-            throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
+            throw Context.Reply(TranslationList.BadNumber);
         }
         
         player.Skills.RemoveExperience(amount);
         
-        throw Context.Reply("Removed {0} experience from {1}", amount, player.Name);
+        throw Context.Reply(TranslationList.RemovedExperience, amount, player.Name);
+    }
+}
+
+[CommandParent(typeof(ExperienceCommand))]
+[CommandData("reset")]
+public class ExperienceResetCommand : Command
+{
+    public ExperienceResetCommand(CommandContext context) : base(context)
+    {
+    }
+
+    public override UniTask ExecuteAsync()
+    {
+        Context.AssertPermission("experience");
+        Context.AssertOnDuty();
+        Context.AssertArguments(1);
+
+        UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+        
+        player.Skills.SetExperience(0);
+        
+        throw Context.Reply(TranslationList.ResetExperience, player.Name);
     }
 }
 
@@ -109,19 +127,14 @@ public class ExperienceSetCommand : Command
         Context.MoveNext();
         uint amount = Context.Parse<uint>();
 
-        if (amount <= 0)
+        if (!ExperienceCommand.IsXpValid(amount))
         {
-            throw Context.Reply("Amount must be greater than 0");
-        }
-        
-        if (amount >= uint.MaxValue)
-        {
-            throw Context.Reply("Amount must be less than {0}", uint.MaxValue);
+            throw Context.Reply(TranslationList.BadNumber);
         }
         
         player.Skills.SetExperience(amount);
         
-        throw Context.Reply("Set {0}'s experience to {1}", player.Name, amount);
+        throw Context.Reply(TranslationList.SetExperience, player.Name, amount);
     }
 }
 
@@ -142,6 +155,6 @@ public class ExperienceCheckCommand : Command
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
         
-        throw Context.Reply("{0} has {1} experience", player.Name, player.Skills.Experience);
+        throw Context.Reply(TranslationList.CheckedExperience, player.Name, player.Skills.Experience);
     }
 }

@@ -13,9 +13,6 @@ public class PositionCommand : Command
     {
     }
     
-    private static readonly Translation SelfPosition = new("PositionSelf", "You are at: {0} | {1} | {2}");
-    private static readonly Translation TargetPosition = new("PositionTarget", "{0} is at: {1} | {2} | {3}");
-    
     public override UniTask ExecuteAsync()
     {
         Context.AssertOnDuty();
@@ -31,7 +28,7 @@ public class PositionCommand : Command
             y = self.Movement.Position.y.ToString("F1");
             z = self.Movement.Position.z.ToString("F1");
             
-            throw Context.Reply(SelfPosition, x, y, z);
+            throw Context.Reply(TranslationList.PositionSelf, x, y, z);
         }
         
         Context.AssertArguments(1);
@@ -41,6 +38,6 @@ public class PositionCommand : Command
         y = target.Movement.Position.y.ToString("F1");
         z = target.Movement.Position.z.ToString("F1");
         
-        throw Context.Reply(TargetPosition, target.Name, x, y, z);
+        throw Context.Reply(TranslationList.PositionTarget, target.Name, x, y, z);
     }
 }

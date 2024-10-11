@@ -3,6 +3,7 @@ using SDG.Unturned;
 using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -43,12 +44,12 @@ public class TeleportCommand : Command
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
                 self.Movement.Teleport(node!.inspectablePosition);
-                throw Context.Reply("Teleporting to {0}", node.locationName);
+                throw Context.Reply(TranslationList.TeleportedToOther, node.locationName);
             }
             
             UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
             self.Movement.Teleport(player);
-            throw Context.Reply("Teleported you to {0}", player.Name);
+            throw Context.Reply(TranslationList.TeleportedToOther, player.Name);
         }
 
         if (Context.HasExactArguments(2))
@@ -59,13 +60,13 @@ public class TeleportCommand : Command
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
                 player.Movement.Teleport(node!.inspectablePosition);
-                throw Context.Reply("Teleporting {0} to {1}", player.Name, node.locationName);
+                throw Context.Reply(TranslationList.TeleportedOtherToOther, player.Name, node.locationName);
             }
             
             UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
 
             target.Movement.Teleport(player);
-            throw Context.Reply("Teleported {0} to {1}", player.Name, target.Name);
+            throw Context.Reply(TranslationList.TeleportedOtherToOther, player.Name, target.Name);
         }
 
         if (Context.HasExactArguments(3))
@@ -74,7 +75,7 @@ public class TeleportCommand : Command
 
             Vector3 position = Context.Parse<Vector3>();
             caller.Movement.Teleport(position);
-            throw Context.Reply("Teleported you to {0}, {1}, {2}", position.x, position.y, position.z);
+            throw Context.Reply(TranslationList.TeleportingToXYZ, position.x, position.y, position.z);
         }
 
         {
@@ -82,7 +83,7 @@ public class TeleportCommand : Command
             Context.MoveNext();
             Vector3 position = Context.Parse<Vector3>();
             player.Movement.Teleport(position);
-            throw Context.Reply("Teleporting {0} to {1}, {2}, {3}", player.Name, position.x, position.y, position.z);
+            throw Context.Reply(TranslationList.TeleportingOtherToXYZ, player.Name, position.x, position.y, position.z);
         }
     }
 }
@@ -103,11 +104,11 @@ public class TeleportWaypointCommand : Command
         
         if (!self.Quests.TryGetMarkerPosition(out Vector3 position))
         {
-            throw Context.Reply("You have not placed a marker");
+            throw Context.Reply(TranslationList.NoWaypoint);
         }
         
         self.Movement.Teleport(position);
-        throw Context.Reply("Teleporting to waypoint!");
+        throw Context.Reply(TranslationList.TeleportingToWaypoint);
     }
 }
 
@@ -130,6 +131,6 @@ public class TeleportHereCommand : Command
         UnturnovPlayer toTp = Context.Parse<UnturnovPlayer>();
         
         toTp.Movement.Teleport(self);
-        throw Context.Reply("Teleporting player {0} to you", toTp.Name);
+        throw Context.Reply(TranslationList.TeleportingPlayerHere, toTp.Name);
     }
 }

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -43,10 +44,10 @@ public class ShutdownCancelCommand : Command
 
         if (!ServerManager.CancelShutdown())
         {
-            throw Context.Reply("Server is not shutting down");
+            throw Context.Reply(TranslationList.ShutdownNotActive);
         }
 
-        UnturnovChat.BroadcastMessage("Cancelled server shutdown");
+        UnturnovChat.BroadcastMessage(TranslationList.ShutdownCancelled);
         throw Context.Exit;
     }
 }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
@@ -25,7 +26,7 @@ public class PrivateMessageCommand : Command
         
         if (target.SteamID == self.SteamID)
         {
-            throw Context.Reply("You can't send a private message to yourself.");
+            throw Context.Reply(TranslationList.PrivateMessageSelf);
         }
         
         target.LastPrivateMessage = self.SteamID;

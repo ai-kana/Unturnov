@@ -3,10 +3,11 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Formatting;
 using Unturnov.Core.Players;
 using Unturnov.Core.Roles;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands;
 
-[CommandData("role", "r")]
+[CommandData("role")]
 [CommandSyntax("<add, a | remove, r | list>")]
 public class RoleCommand : Command
 {
@@ -40,7 +41,7 @@ public class RoleAddCommand : Command
         Role role = Context.Parse<Role>();
 
         player.Roles.AddRole(role.Id);
-        throw Context.Reply("Added {0} to {1}", player.Name, role.Id);
+        throw Context.Reply(TranslationList.AddedRole, player.Name, role.Id);
     }
 }
 
@@ -64,11 +65,11 @@ public class RoleRemoveCommand : Command
 
         if (!player.Roles.HasRole(role.Id))
         {
-            throw Context.Reply("{0} does not have {1}", player.Name, role.Id);
+            throw Context.Reply(TranslationList.DoesNotHaveRole, player.Name, role.Id);
         }
 
         player.Roles.AddRole(role.Id);
-        throw Context.Reply("Removed {0} from {1}", player.Name, role.Id);
+        throw Context.Reply(TranslationList.RemovedRole, player.Name, role.Id);
     }
 }
 
@@ -87,12 +88,12 @@ public class RoleListCommand : Command
 
         if (Context.HasExactArguments(0))
         {
-            throw Context.Reply("Roles: {0}", Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
+            throw Context.Reply(TranslationList.RoleList, Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
         }
 
         UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
 
         HashSet<Role> roles = RoleManager.GetRoles(player.Roles.Roles);
-        throw Context.Reply("{0} has {1}", player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
+        throw Context.Reply(TranslationList.RoleHasRole, player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
     }
 }

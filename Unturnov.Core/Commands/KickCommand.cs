@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
@@ -19,18 +20,18 @@ public class KickCommand : Command
         Context.AssertOnDuty();
         Context.AssertArguments(1);
         
-        UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
+        UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
 
         if (Context.HasExactArguments(1))
         {
-            player.Kick();
-            throw Context.Reply("Kicked {0}", player.Name);
+            target.Kick();
+            throw Context.Reply(TranslationList.Kicked, target.Name);
         }
         
         Context.MoveNext();
         string reason = Context.Form();
         
-        player.Kick(reason);
-        throw Context.Reply("Kicked {0} for {1}", player.Name, reason);
+        target.Kick(reason);
+        throw Context.Reply(TranslationList.KickedReason, target.Name, reason);
     }
 }
