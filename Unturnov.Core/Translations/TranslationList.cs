@@ -129,5 +129,7 @@ public class TranslationList
     public static readonly Translation VehicleNotFound = new("VehicleNotFound", "Vehicle not found");
     public static readonly Translation SpawningVehicle = new("SpawningVehicle", "Spawning {0}");
     
-    //Warn
+    // Connection
+    public static readonly Translation PlayerConnected = new("PlayerConnected", "{0} has joined the server");
+    public static readonly Translation PlayerDisconnected = new("PlayerDisconnected", "{0} has left the server");
 }

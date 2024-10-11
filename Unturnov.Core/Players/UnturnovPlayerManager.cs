@@ -6,6 +6,7 @@ using Steamworks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Extensions;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
 
@@ -37,8 +38,6 @@ public class UnturnovPlayerManager
         PlayerLife.OnTellVirus_Global += GodModeHandler;
         PlayerLife.OnTellBroken_Global += GodModeHandler;
         PlayerLife.OnTellBleeding_Global += GodModeHandler;
-
-        _Logger.LogInformation("Created manager");
     }
 
     private static void GodModeHandler(PlayerLife life)
@@ -115,7 +114,7 @@ public class UnturnovPlayerManager
         UnturnovPlayer player = await UnturnovPlayer.CreateAsync(steamPlayer);
         Players.TryAdd(player.SteamID, player);
 
-        UnturnovChat.BroadcastMessage("{0} has joined the server", player.Name);
+        UnturnovChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
         OnPlayerConnected?.BeginInvoke(player, null, null);
     }
@@ -127,7 +126,7 @@ public class UnturnovPlayerManager
 
         OnPlayerDisconnected?.Invoke(player);
 
-        UnturnovChat.BroadcastMessage("{0} has left the server", player.Name);
+        UnturnovChat.BroadcastMessage(TranslationList.PlayerDisconnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has left the server");
     }
 }
