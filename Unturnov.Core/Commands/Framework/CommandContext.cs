@@ -55,11 +55,10 @@ public sealed class CommandContext
     {
         if (count > _Arguments.Count())
         {
-            throw Reply("This command requires {0} arguments", count);
+            throw Reply(TranslationList.AssertArguments, count);
         }
     }
 
-    private const string AssertPermissionFailed = "You do not have permission to execute this command";
     public void AssertPermission(string permission)
     {
         if (Caller is not UnturnovPlayer player)
@@ -69,16 +68,15 @@ public sealed class CommandContext
 
         if (!player.Permissions.HasPermission(permission))
         {
-            throw Reply(AssertPermissionFailed);
+            throw Reply(TranslationList.AssertPermission);
         }
     }
 
-    private const string AssertPlayerFailed = "This command can only be execute by players";
     public void AssertPlayer()
     {
         if (Caller is not UnturnovPlayer)
         {
-            throw Reply(AssertPlayerFailed);
+            throw Reply(TranslationList.AssertPlayer);
         }
     }
 
@@ -86,7 +84,7 @@ public sealed class CommandContext
     {
         if (Caller is not UnturnovPlayer player)
         {
-            throw Reply(AssertPlayerFailed);
+            throw Reply(TranslationList.AssertPlayer);
         }
 
         caller = player;
@@ -105,7 +103,7 @@ public sealed class CommandContext
             return;
         }
 
-        throw Reply("You cannot use this command for {0}", Formatter.FormatTime(time));
+        throw Reply(TranslationList.AssertCooldown, Formatter.FormatTime(time));
     }
 
     public void AssertOnDuty()

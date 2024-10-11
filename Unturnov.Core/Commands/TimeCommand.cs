@@ -103,6 +103,6 @@ public class TimeNightCommand : Command
         Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * (LevelLighting.bias + LevelLighting.transition));
-        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.Night));
+        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.NightWord));
     }
 }

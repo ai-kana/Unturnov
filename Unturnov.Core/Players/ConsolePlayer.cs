@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
 
@@ -18,6 +19,11 @@ public class ConsolePlayer : IPlayer
     public void SendMessage(string format, params object[] args)
     {
         _Logger.LogInformation(format, args);
+    }
+
+    public void SendMessage(Translation translation, params object[] args)
+    {
+        SendMessage(translation.TranslateNoColor(Language, args));
     }
 
     public ConsolePlayer()

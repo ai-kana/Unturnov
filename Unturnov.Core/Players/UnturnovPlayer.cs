@@ -5,6 +5,7 @@ using Unturnov.Core.Chat;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Players.Components;
 using Unturnov.Core.Roles;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
 
@@ -59,11 +60,6 @@ public class UnturnovPlayer : IPlayer, IFormattable
         Clothing = new(this);
     }
 
-    public void SendMessage(string format, params object[] args)
-    {
-        UnturnovChat.BroadcastMessage(this, format, args);
-    }
-
     public string ToString(string format, IFormatProvider formatProvider)
     {
         return Name;
@@ -88,5 +84,15 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public void Spy(CSteamID caller)
     {
         Player.sendScreenshot(caller, null);
+    }
+
+    public void SendMessage(string format, params object[] args)
+    {
+        UnturnovChat.BroadcastMessage(this, format, args);
+    }
+
+    public void SendMessage(Translation translation, params object[] args)
+    {
+        UnturnovChat.BroadcastMessage(translation.Translate(Language, args));
     }
 }

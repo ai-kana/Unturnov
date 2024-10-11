@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Unturnov.Core.Logging;
 using Unturnov.Core.Players;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Commands.Framework;
 
@@ -103,7 +104,7 @@ public class CommandManager
         Type? type = GetCommandType(arguments, out int depth);
         if (type == null)
         {
-            caller.SendMessage($"There is no command called {arguments.First()}");
+            caller.SendMessage(TranslationList.NoCommandFound, arguments.First());
             return;
         }
         arguments = arguments.Skip(1 + depth);

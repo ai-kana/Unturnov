@@ -9,6 +9,10 @@ public class TranslationList
     public static readonly Translation BadNumber = new("BadNumber", "Invalid Number");
     public static readonly Translation On = new("On", "on");
     public static readonly Translation Off = new("Off", "off");
+    public static readonly Translation OneArgument = new("OneArgument", "{0}");
+    public static readonly Translation TwoArguments = new("TwoArguments", "{0} {1}");
+    public static readonly Translation ThreeArguments = new("ThreeArguments", "{0} {1} {2}");
+    public static readonly Translation FourArguments = new("FourArguments", "{0} {1} {2} {3}");
     
     //Clear
     public static readonly Translation ClearedInventoryOther = new("ClearedInventoryOther", "Cleared {0}'s inventory");
@@ -118,8 +122,8 @@ public class TranslationList
     public static readonly Translation CurrentTime = new("CurrentTime", "Current time is {0} ({1})");
     public static readonly Translation TimeSet = new("TimeSet", "Time set to {0}");
     public static readonly Translation TimeSetDayOrNight = new("TimeSetDayOrNight", "Time set to {0}");
-    public static readonly Translation Day = new("Day", "Day");
-    public static readonly Translation Night = new("Night", "Night");
+    public static readonly Translation DayWord = new("Day", "Day");
+    public static readonly Translation NightWord = new("Night", "Night");
     
     //Unfreeze
     public static readonly Translation PlayerNotFrozen = new("PlayerAlreadyUnfrozen", "Player {0} is not frozen");
@@ -132,4 +136,23 @@ public class TranslationList
     // Connection
     public static readonly Translation PlayerConnected = new("PlayerConnected", "{0} has joined the server");
     public static readonly Translation PlayerDisconnected = new("PlayerDisconnected", "{0} has left the server");
+
+    // Command Manager
+    public static readonly Translation NoCommandFound = new("NoCommandFound", "There is no command called {0}");
+
+    // Command Context
+    public static readonly Translation AssertArguments = new("AssertArguments", "This command requires {0} arguments");
+    public static readonly Translation AssertPermission = new("AssertPermission", "You do not have permission to execute this command");
+    public static readonly Translation AssertPlayer = new("AssertPlayer", "This command can only be executed by players");
+    public static readonly Translation AssertCooldown = new("AssertCooldown", "You cannot use this command for {0}");
+
+    // Time
+    public static readonly Translation Second = new("Second", "{0} second");
+    public static readonly Translation Seconds = new("Seconds", "{0} seconds");
+    public static readonly Translation Minute = new("Minute", "{0} minute");
+    public static readonly Translation Minutes = new("Minutes", "{0} minutes");
+    public static readonly Translation Hour = new("Hour", "{0} hour");
+    public static readonly Translation Hours = new("Hours", "{0} hours");
+    public static readonly Translation Day = new("Day", "{0} day");
+    public static readonly Translation Days = new("Days", "{0} day");
 }

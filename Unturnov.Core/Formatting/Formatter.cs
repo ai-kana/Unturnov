@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using UnityEngine;
 using Unturnov.Core.Configuration;
+using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Formatting;
 
@@ -51,29 +52,39 @@ public static class Formatter
         return String.Join(seperator, strings);
     }
 
-    private static IEnumerable<string> GetTime(long seconds)
+    private static IEnumerable<TranslationPackage> GetTime(long seconds)
     {
         TimeSpan span = new(seconds * TimeSpan.TicksPerSecond);
         if (span.Days > 0)
         {
-            yield return $"{span.Days} {(span.Days == 1 ? "Day" : "Days")}";
+            yield return new(span.Days == 1 ? TranslationList.Day : TranslationList.Days, span.Days);
         }
         if (span.Hours > 0)
         {
-            yield return $"{span.Hours} {(span.Hours == 1 ? "Hour" : "Hours")}";
+            yield return new(span.Hours == 1 ? TranslationList.Hour : TranslationList.Hours, span.Hours);
         }
         if (span.Minutes > 0)
         {
-            yield return $"{span.Minutes} {(span.Minutes == 1 ? "Minute" : "Minutes")}";
+            yield return new(span.Minutes == 1 ? TranslationList.Minute : TranslationList.Minutes, span.Minutes);
         }
         if (span.Seconds > 0)
         {
-            yield return $"{span.Seconds} {(span.Seconds == 1 ? "Second" : "Seconds")}";
+            yield return new(span.Seconds == 1 ? TranslationList.Second : TranslationList.Seconds, span.Seconds);
         }
     }
 
-    public static string FormatTime(long seconds)
+    private static readonly Translation[] _Arguments = new Translation[4]
     {
-        return FormatList(GetTime(seconds), " ");
+        TranslationList.OneArgument,
+        TranslationList.TwoArguments,
+        TranslationList.ThreeArguments,
+        TranslationList.FourArguments,
+    };
+
+    public static TranslationPackage FormatTime(long seconds)
+    {
+        IEnumerable<TranslationPackage> args = GetTime(seconds);
+        Translation final = _Arguments[args.Count() - 1];
+        return new(final, args.ToArray());
     }
 }
