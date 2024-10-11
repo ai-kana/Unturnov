@@ -8,11 +8,11 @@ using Command = Unturnov.Core.Commands.Framework.Command;
 
 namespace Unturnov.Core.Commands;
 
-[CommandData("item", "i")]
+[CommandData("give", "item", "i")]
 [CommandSyntax("<[id | name] [amount?]>")]
-public class ItemCommand : Command
+public class GiveCommand : Command
 {
-    public ItemCommand(CommandContext context) : base(context)
+    public GiveCommand(CommandContext context) : base(context)
     {
     }
 
@@ -49,7 +49,7 @@ public class ItemCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("item");
+        Context.AssertPermission("give");
         Context.AssertOnDuty();
         Context.AssertArguments(1);
         Context.AssertPlayer(out UnturnovPlayer self);
