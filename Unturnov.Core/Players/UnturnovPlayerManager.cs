@@ -70,6 +70,18 @@ public class UnturnovPlayerManager
         {
             player.Kick(reason);
         }
+    
+        while (Players.Count != 0);
+    }
+
+    public static void KickAll(Translation translation, params object[] args)
+    {
+        foreach (UnturnovPlayer player in GetPlayerListCopy())
+        {
+            player.Kick(translation, args);
+        }
+    
+        while (Players.Count != 0);
     }
 
     public static bool TryGetPlayer(Player inPlayer, out UnturnovPlayer player)
@@ -116,7 +128,7 @@ public class UnturnovPlayerManager
 
         UnturnovChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
-        OnPlayerConnected?.BeginInvoke(player, null, null);
+        OnPlayerConnected?.Invoke(player);
     }
 
     private static async void OnServerDisconnected(CSteamID steamID)

@@ -43,8 +43,6 @@ public class ThreadConsole : ICommandInputOutput
         CommandWindow.shouldLogAnticheat = false;
         CommandWindow.shouldLogJoinLeave = false;
 
-        ServerManager.OnPreShutdown += OnPreShutdown;
-
         Console.CancelKeyPress += OnCancelling;
 
         UTF8Encoding encoding = new UTF8Encoding(true);
@@ -54,11 +52,6 @@ public class ThreadConsole : ICommandInputOutput
         _Thread = new(InputThreadLoop);
         _Thread.IsBackground = true;
         _Thread.Start();
-    }
-
-    private void OnPreShutdown()
-    {
-        shutdown(null!);
     }
 
     public void outputError(string error)

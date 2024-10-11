@@ -18,7 +18,7 @@ public class ShutdownCommand : Command
         Context.AssertPermission("shutdown");
         Context.AssertOnDuty();
 
-        uint delay = 0;
+        uint delay = 1;
         if (Context.HasArguments(1))
         {
             delay = Context.Parse<uint>();

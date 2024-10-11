@@ -13,6 +13,7 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 using MySqlConnector;
 using Unturnov.Core.Sql;
+using Unturnov.Core.Offenses;
 
 namespace Unturnov.Core;
 
@@ -84,6 +85,11 @@ public sealed class UnturnovHost
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();
 
+        await OffenseManager.CreateTables();
+        await OffenseManager.AddOffense(Offense.Create(OffenseType.Warn, new(0), new(0), "Testing", 0));
+        IEnumerable<Offense> offenses = await OffenseManager.GetWarnOffenses(new(0));
+        _Logger.LogInformation($"Found{offenses.Count()}");
+        
         _Logger.LogInformation("Started Unturnov!");
     }
 

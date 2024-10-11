@@ -102,7 +102,8 @@ public class TranslationList
     public static readonly Translation RoleHasRole = new("RoleHasRole", "{0} has {1}");
     
     //Shutdown
-    public static readonly Translation Shutdown = new("Shutdown", "Server is shutting down in {0} seconds");
+    public static readonly Translation Shutdown = new("Shutdown", "Server is shutting down in {0}");
+    public static readonly Translation ShutdownKick = new("ShutdownKick", "The server has shutdown");
     public static readonly Translation ShutdownCancelled = new("ShutdownCancelled", "Server shutdown cancelled");
     public static readonly Translation ShutdownNotActive = new("ShutdownNotActive", "Server is not shutting down");
     

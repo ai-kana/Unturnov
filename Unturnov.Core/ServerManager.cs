@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using SDG.Unturned;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Formatting;
@@ -20,13 +19,12 @@ public static class ServerManager
     private static void DoSave()
     {
         OnServerSave?.Invoke();
-        MainThreadWorker.EnqueueSync(SaveManager.save);
     }
 
     public static void Shutdown()
     {
         DoSave();
-        UnturnovPlayerManager.KickAll("Server shutting down"); //Perhaps translate this message too?
+        UnturnovPlayerManager.KickAll(TranslationList.ShutdownKick); 
         OnPreShutdown?.Invoke();
         Provider.shutdown(0);
     }

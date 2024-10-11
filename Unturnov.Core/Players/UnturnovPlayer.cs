@@ -33,6 +33,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public readonly UnturnovPlayerSkills Skills;
     public readonly UnturnovPlayerInventory Inventory;
     public readonly UnturnovPlayerClothing Clothing;
+    public readonly UnturnovPlayerModeration Moderation;
 
     public CSteamID? LastPrivateMessage {get; set;} = null;
 
@@ -58,6 +59,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
         Skills = new(this);
         Inventory = new(this);
         Clothing = new(this);
+        Moderation = new(this);
     }
 
     public string ToString(string format, IFormatProvider formatProvider)
@@ -73,6 +75,11 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public void Kick(string reason)
     {
         Provider.kick(SteamID, reason);
+    }
+
+    public void Kick(Translation translation, params object[] args)
+    {
+        Provider.kick(SteamID, translation.TranslateNoColor(Language, args));
     }
 
     public void Exit()
