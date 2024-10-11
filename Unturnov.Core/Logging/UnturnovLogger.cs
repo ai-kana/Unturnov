@@ -27,7 +27,7 @@ public sealed class UnturnovLogger : ILogger
     private void SetLogLevel()
     {
         string level = UnturnovHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
-        AllowedLevel = Enum.Parse<LogLevel>(level);
+        AllowedLevel = (LogLevel)Enum.Parse(typeof(LogLevel), level);
     }
 
     private void OnConfigurationReloaded()

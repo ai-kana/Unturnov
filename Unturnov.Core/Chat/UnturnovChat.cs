@@ -93,7 +93,7 @@ public class UnturnovChat
 
         UnturnovPlayer player = UnturnovPlayerManager.Players[steamPlayer.playerID.steamID];
 
-        if (text.StartsWith('/'))
+        if (text.StartsWith("/"))
         {
             CommandManager.ExecuteCommand(text, player);
             return;

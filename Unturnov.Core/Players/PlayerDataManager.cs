@@ -44,7 +44,7 @@ public static class PlayerDataManager
 
         string data = JsonConvert.SerializeObject(player.SaveData);
 
-        await using StreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write));
+        using StreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write));
         await writer.WriteAsync(data);
     }
 }

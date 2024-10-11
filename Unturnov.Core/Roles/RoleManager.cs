@@ -16,7 +16,7 @@ public class RoleManager
 
         string content = await reader.ReadToEndAsync();
 
-        await using StreamWriter writer = new(File.Create("Roles.json"));
+        using StreamWriter writer = new(File.Create("Roles.json"));
         await writer.WriteAsync(content);
     }
 

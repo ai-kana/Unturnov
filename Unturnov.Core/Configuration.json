@@ -2,5 +2,11 @@
     "LoggingLevel": "Debug",
     "ChatIconUrl": "https://i.imgur.com/904npoX.png",
     "LocalChatDistance": 75.0,
-    "DiscordInviteLink": "https://discord.gg/QBjuRAkarC"
+    "DiscordInviteLink": "https://discord.gg/QBjuRAkarC",
+    "Sql": {
+        "Server": "",
+        "Database": "",
+        "UserID": "",
+        "Password": ""
+    }
 }

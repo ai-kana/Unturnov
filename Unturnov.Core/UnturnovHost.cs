@@ -11,6 +11,8 @@ using Unturnov.Core.Logging;
 using Unturnov.Core.Roles;
 using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
+using MySqlConnector;
+using Unturnov.Core.Sql;
 
 namespace Unturnov.Core;
 
@@ -31,7 +33,7 @@ public sealed class UnturnovHost
 
         string content = await reader.ReadToEndAsync();
 
-        await using StreamWriter writer = new("Configuration.json");
+        using StreamWriter writer = new("Configuration.json");
         await writer.WriteAsync(content);
     }
 
@@ -72,6 +74,9 @@ public sealed class UnturnovHost
 
         _Harmony = new("Unturnov.Core");
         _Harmony.PatchAll();
+
+        await using MySqlConnection connection = SqlManager.CreateConnection();
+        await connection.OpenAsync();
 
         _Owner = new("Unturnov");
         _Owner.AddComponent<MainThreadWorker>();

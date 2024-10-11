@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
+using Unturnov.Core.Extensions;
 using Unturnov.Core.Logging;
-using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
 
@@ -122,7 +122,7 @@ public class UnturnovPlayerManager
 
     private static async void OnServerDisconnected(CSteamID steamID)
     {
-        Players.Remove(steamID, out UnturnovPlayer player);
+        Players.TryRemove(steamID, out UnturnovPlayer player);
         await PlayerDataManager.SaveDataAsync(player);
 
         OnPlayerDisconnected?.Invoke(player);
