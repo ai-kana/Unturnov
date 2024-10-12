@@ -160,4 +160,9 @@ public class TranslationList
     // Banned
     public static readonly Translation BanPermanent = new("BanPermanent", "You are permanently banned for '{0}' appeal at {1}");
     public static readonly Translation BanTemporary = new("BanTemporary", "You are banned for '{0}' for another {1} appeal at {2}");
+
+    // Muted
+    public static readonly Translation MutePermanent = new("MutePermanent", "You are permanently muted for '{0}' appeal at {1}");
+    public static readonly Translation MuteTemporary = new("MuteTemporary", "You are muted for '{0}' for another {1} appeal at {2}");
+    public static readonly Translation Unmuted = new("Unmuted", "Your mute has expired");
 }

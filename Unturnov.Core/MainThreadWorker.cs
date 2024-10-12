@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Concurrent;
-using SDG.Unturned;
 using UnityEngine;
 using Action = System.Action;
 
@@ -8,6 +8,8 @@ namespace Unturnov.Core;
 public class MainThreadWorker : MonoBehaviour
 {
     private static ConcurrentQueue<WorkWrapper> WorkQueue = new();
+    private static ConcurrentQueue<IEnumerator> CoroutineQueue = new();
+    private static ConcurrentQueue<IEnumerator> CancelCoroutineQueue = new();
 
     private void Start()
     {
@@ -20,11 +22,31 @@ public class MainThreadWorker : MonoBehaviour
         {
             work.Run();
         }
+
+        if (CoroutineQueue.TryDequeue(out IEnumerator result))
+        {
+            StartCoroutine(result);
+        }
+
+        if (CancelCoroutineQueue.TryDequeue(out IEnumerator cancel))
+        {
+            StopCoroutine(cancel);
+        }
     }
 
     public static void Enqueue(Action work)
     {
         WorkQueue.Enqueue(new(work));
+    }
+
+    public static void EnqueueCoroutine(IEnumerator routine)
+    {
+        CoroutineQueue.Enqueue(routine);
+    }
+
+    public static void CancelCoroutine(IEnumerator routine)
+    {
+        CancelCoroutineQueue.Enqueue(routine);
     }
 
     /// <summary>

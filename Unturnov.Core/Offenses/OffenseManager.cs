@@ -138,4 +138,15 @@ public class OffenseManager
 
         await command.ExecuteNonQueryAsync();
     }
+
+    private const string PardonOffenseCommand = $"UPDATE {OffenseTable} SET {OffensePardoned}=1 WHERE {OffenseId}=@{OffenseId}";
+    public static async UniTask PardonOffense(int id)
+    {
+        await using MySqlConnection connection = SqlManager.CreateConnection();
+        await connection.OpenAsync();
+        await using MySqlCommand command = new(PardonOffenseCommand, connection);
+        command.Parameters.Add($"@{OffenseId}", MySqlDbType.Int32).Value = id;
+
+        await command.ExecuteNonQueryAsync();
+    }
 }

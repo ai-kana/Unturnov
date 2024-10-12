@@ -99,6 +99,11 @@ public class UnturnovChat
             return;
         }
 
+        if (player.Moderation.IsMuted && mode != EChatMode.GROUP)
+        {
+            return;
+        }
+
         string message = text.Replace("<", "< ");
 
         switch (mode)

@@ -41,6 +41,13 @@ public class UnturnovPlayerManager
         PlayerLife.OnTellVirus_Global += GodModeHandler;
         PlayerLife.OnTellBroken_Global += GodModeHandler;
         PlayerLife.OnTellBleeding_Global += GodModeHandler;
+        PlayerVoice.onRelayVoice += OnRelayVoice;
+    }
+
+    private static void OnRelayVoice(PlayerVoice speaker, bool wantsToUseWalkieTalkie, ref bool shouldAllow, ref bool shouldBroadcastOverRadio, ref PlayerVoice.RelayVoiceCullingHandler cullingHandler)
+    {
+        TryGetPlayer(speaker.player, out UnturnovPlayer player);
+        shouldAllow = !player.Moderation.IsMuted;
     }
 
     private static void GodModeHandler(PlayerLife life)
@@ -129,27 +136,45 @@ public class UnturnovPlayerManager
         UnturnovPlayer player = await UnturnovPlayer.CreateAsync(steamPlayer);
         Players.TryAdd(player.SteamID, player);
 
+        await player.Moderation.AddMute(new(0), 15, "Testing");
+
         IEnumerable<Offense> offenses = await PlayerIdManager.GetOffenses(player);
-        Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
 
         string discord = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord link";
 
+        Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
         if (permBan != null)
         {
             player.Kick(TranslationList.BanPermanent, permBan.Reason, discord);
             return;
         }
-
-        long now = DateTimeOffset.Now.ToUnixTimeSeconds();
-        Offense? nonPermBan = 
-            offenses.Where(x => x.OffenseType == OffenseType.Ban && x.Duration > 0 && !x.Pardoned)
-            .FirstOrDefault(x => (x.Duration + x.Issued) > now);
-
-        if (nonPermBan != null)
+        else
         {
-            long time = (nonPermBan.Issued + nonPermBan.Duration) - now;
-            player.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(time), discord);
-            return;
+            Offense? nonPermBan = offenses.Where(x => x.OffenseType == OffenseType.Ban && !x.IsPermanent && x.IsActive)
+                .OrderByDescending(x => x.Remaining).FirstOrDefault();
+            if (nonPermBan != null)
+            {
+                player.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
+                return;
+            }
+        }
+
+        Offense? permMute = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Mute && x.IsPermanent);
+        if (permMute != null)
+        {
+            player.SendMessage(TranslationList.MutePermanent, permMute.Reason, discord);
+            player.Moderation.IsMuted = true;
+        }
+        else
+        {
+            Offense? tempMute = offenses.Where(x => x.OffenseType == OffenseType.Mute && !x.IsPermanent)
+                .OrderByDescending(x => x.Remaining).FirstOrDefault();
+            if (tempMute != null)
+            {
+                player.SendMessage(TranslationList.MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
+                player.Moderation.IsMuted = true;
+                player.Moderation.EnqueueUnmute(tempMute.Remaining);
+            }
         }
 
         UnturnovChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
@@ -177,6 +202,8 @@ public class UnturnovPlayerManager
         await PlayerDataManager.SaveDataAsync(player);
 
         OnPlayerDisconnected?.Invoke(player);
+
+        player.Moderation.CancelUnmute();
 
         UnturnovChat.BroadcastMessage(TranslationList.PlayerDisconnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has left the server");
