@@ -86,6 +86,7 @@ public sealed class UnturnovHost
         await RoleManager.RegisterRoles();
 
         await OffenseManager.CreateTables();
+        await PlayerIdManager.CreateTables();
         
         _Logger.LogInformation("Started Unturnov!");
     }

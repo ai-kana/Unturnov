@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Unturnov.Core.Configuration;
@@ -74,8 +75,16 @@ public sealed class UnturnovLogger : ILogger
         {
             return;
         }
+
+        Exception? current = exception;
+        StringBuilder builder = new();
+        while (current != null)
+        {
+            builder.Append(current);
+            current = current.InnerException;
+        }
     
-        string formatted = formatter(state, exception);
+        string formatted = state + builder.ToString();
         string color = GetLevelColor(logLevel);
         string tag = GetLevelTag(logLevel);
         string fileMessage = string.Format(MessageFormat, DateTime.Now, tag, _Name, formatted);

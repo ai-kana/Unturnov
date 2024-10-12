@@ -25,5 +25,5 @@ public class Offense
     public long Issued {get; set;} 
     public long Duration {get; set;} 
     public bool Pardoned {get; set;}
-    public string? Reason {get; set;} 
+    public string Reason {get; set;} = "No reason provided";
 }

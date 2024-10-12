@@ -1,11 +1,14 @@
 using System.Collections.Concurrent;
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Extensions;
+using Unturnov.Core.Formatting;
 using Unturnov.Core.Logging;
+using Unturnov.Core.Offenses;
 using Unturnov.Core.Translations;
 
 namespace Unturnov.Core.Players;
@@ -120,15 +123,52 @@ public class UnturnovPlayerManager
         return true;
     }
 
-    private static async void OnServerConnected(CSteamID steamID)
+    private static async UniTask OnConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
         UnturnovPlayer player = await UnturnovPlayer.CreateAsync(steamPlayer);
         Players.TryAdd(player.SteamID, player);
 
+        IEnumerable<Offense> offenses = await PlayerIdManager.GetOffenses(player);
+        Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
+
+        string discord = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord link";
+
+        if (permBan != null)
+        {
+            player.Kick(TranslationList.BanPermanent, permBan.Reason, discord);
+            return;
+        }
+
+        long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+        Offense? nonPermBan = 
+            offenses.Where(x => x.OffenseType == OffenseType.Ban && x.Duration > 0 && !x.Pardoned)
+            .FirstOrDefault(x => (x.Duration + x.Issued) > now);
+
+        if (nonPermBan != null)
+        {
+            long time = (nonPermBan.Issued + nonPermBan.Duration) - now;
+            player.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(time), discord);
+            return;
+        }
+
         UnturnovChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
         OnPlayerConnected?.Invoke(player);
+    }
+
+    private static async void OnServerConnected(CSteamID steamID)
+    {
+        try
+        {
+            await OnConnected(steamID);
+        }
+        catch (Exception ex)
+        {
+            _Logger.LogError(ex, "Exception while player connection; Kicking...");
+            string discord = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord link";
+            Provider.kick(steamID, $"Something failed while connecting; Please contact staff; {discord ?? "Failed to get link :C"}");
+        }
     }
 
     private static async void OnServerDisconnected(CSteamID steamID)

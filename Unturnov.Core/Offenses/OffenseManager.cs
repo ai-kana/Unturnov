@@ -7,6 +7,7 @@ namespace Unturnov.Core.Offenses;
 
 // God i hate sql
 // I FUCKING HATE IT
+// its better when no headache
 public class OffenseManager
 {
     private const string OffenseTable = "Offenses";
@@ -20,17 +21,19 @@ public class OffenseManager
     private const string OffenseReason = "Reason";
 
     private const string CreateTablesCommand = 
-        $"CREATE TABLE IF NOT EXISTS {OffenseTable} ("
-        + $"{OffenseId} INT NOT NULL AUTO_INCREMENT,"
-        + $"{OffenseType} TINYINT,"
-        + $"{OffenseOffender} BIGINT UNSIGNED,"
-        + $"{OffenseIssuer} BIGINT UNSIGNED,"
-        + $"{OffenseIssued} BIGINT,"
-        + $"{OffenseDuration} BIGINT,"
-        + $"{OffensePardoned} TINYINT,"
-        + $"{OffenseReason} VARCHAR(100),"
-        + "PRIMARY KEY (Id)"
-        + ");";
+    $"""
+    CREATE TABLE IF NOT EXISTS {OffenseTable} (
+    {OffenseId} INT NOT NULL AUTO_INCREMENT,
+    {OffenseType} TINYINT,
+    {OffenseOffender} BIGINT UNSIGNED,
+    {OffenseIssuer} BIGINT UNSIGNED,
+    {OffenseIssued} BIGINT,
+    {OffenseDuration} BIGINT,
+    {OffensePardoned} TINYINT,
+    {OffenseReason} VARCHAR(100),
+    PRIMARY KEY (Id)
+    );
+    """;
 
     public async static UniTask CreateTables()
     { 
@@ -129,7 +132,7 @@ public class OffenseManager
         command.Parameters.Add($"@{OffenseOffender}", MySqlDbType.UInt64).Value = offense.Offender;
         command.Parameters.Add($"@{OffenseIssuer}", MySqlDbType.UInt64).Value = offense.Issuer;
         command.Parameters.Add($"@{OffenseIssued}", MySqlDbType.Int64).Value = offense.Issued;
-        command.Parameters.Add($"@{OffenseDuration}", MySqlDbType.Int64).Value = offense.Offender;
+        command.Parameters.Add($"@{OffenseDuration}", MySqlDbType.Int64).Value = offense.Duration;
         command.Parameters.Add($"@{OffensePardoned}", MySqlDbType.Byte).Value = offense.Pardoned ? 1 : 0;
         command.Parameters.Add($"@{OffenseReason}", MySqlDbType.VarChar).Value = offense.Reason;
 

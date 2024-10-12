@@ -84,7 +84,6 @@ public static class Formatter
     public static TranslationPackage FormatTime(long seconds)
     {
         IEnumerable<TranslationPackage> args = GetTime(seconds);
-        Translation final = _Arguments[args.Count() - 1];
-        return new(final, args.ToArray());
+        return new(_Arguments[args.Count() - 1], args.ToArray());
     }
 }

@@ -156,4 +156,8 @@ public class TranslationList
     public static readonly Translation Hours = new("Hours", "{0} hours");
     public static readonly Translation Day = new("Day", "{0} day");
     public static readonly Translation Days = new("Days", "{0} day");
+
+    // Banned
+    public static readonly Translation BanPermanent = new("BanPermanent", "You are permanently banned for '{0}' appeal at {1}");
+    public static readonly Translation BanTemporary = new("BanTemporary", "You are banned for '{0}' for another {1} appeal at {2}");
 }
