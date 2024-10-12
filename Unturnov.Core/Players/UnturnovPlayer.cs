@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
@@ -21,8 +20,6 @@ public class UnturnovPlayer : IPlayer, IFormattable
 
     public PlayerData SaveData {get; private set;}
 
-    public bool OnDuty {get; set;} = false;
-    
     private readonly ILogger _Logger;
 
     public readonly UnturnovPlayerMovement Movement; 
@@ -35,6 +32,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public readonly UnturnovPlayerInventory Inventory;
     public readonly UnturnovPlayerClothing Clothing;
     public readonly UnturnovPlayerModeration Moderation;
+    public readonly UnturnovPlayerAdministration Administration;
 
     public CSteamID? LastPrivateMessage {get; set;} = null;
 
@@ -61,6 +59,7 @@ public class UnturnovPlayer : IPlayer, IFormattable
         Inventory = new(this);
         Clothing = new(this);
         Moderation = new(this);
+        Administration = new(this);
     }
 
     public string ToString(string format, IFormatProvider formatProvider)

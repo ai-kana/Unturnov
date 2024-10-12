@@ -54,7 +54,7 @@ public class UnturnovPlayerManager
     {
         // Do this with a patch later
         TryGetPlayer(life.player, out UnturnovPlayer player);
-        if (player.Life.GodMode)
+        if (player.Administration.GodMode)
         {
             life.sendRevive();
         }
@@ -63,7 +63,7 @@ public class UnturnovPlayerManager
     private static void OnDamageRequested(ref DamagePlayerParameters parameters, ref bool shouldAllow)
     {
         TryGetPlayer(parameters.player, out UnturnovPlayer player);
-        shouldAllow = !player?.Life.GodMode ?? true;
+        shouldAllow = !player?.Administration.GodMode ?? true;
     }
 
     private static IEnumerable<UnturnovPlayer> GetPlayerListCopy()

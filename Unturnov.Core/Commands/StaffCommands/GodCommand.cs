@@ -18,18 +18,19 @@ public class GodCommand : Command
         Context.AssertPermission("god");
         Context.AssertOnDuty();
 
+        bool state;
         if (Context.HasArguments(1))
         {
             Context.AssertPermission("god.other");
             UnturnovPlayer player = Context.Parse<UnturnovPlayer>();
-            player.Life.GodMode = !player.Life.GodMode;
+            state = player.Administration.ToggleGod();
             
-            throw Context.Reply(TranslationList.GodModeOther, player.Name, player.Life.GodMode ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+            throw Context.Reply(TranslationList.GodModeOther, player.Name, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
         }
 
         Context.AssertPlayer(out UnturnovPlayer self);
-        self.Life.GodMode = !self.Life.GodMode;
-        
-        throw Context.Reply(TranslationList.GodModeSelf, self.Life.GodMode ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        state = self.Administration.ToggleGod();
+
+        throw Context.Reply(TranslationList.GodModeSelf, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
     }
 }

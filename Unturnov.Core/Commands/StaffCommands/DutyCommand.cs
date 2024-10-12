@@ -19,8 +19,8 @@ public class DutyCommand : Command
         Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
-        caller.OnDuty = !caller.OnDuty;
-        UnturnovChat.BroadcastMessage(TranslationList.DutyStateGlobal, caller.Name, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        bool state = caller.Administration.ToggleDuty();
+        UnturnovChat.BroadcastMessage(TranslationList.DutyStateGlobal, caller.Name, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
         throw Context.Exit;
     }
 }
@@ -38,8 +38,8 @@ public class DutySlientCommand : Command
         Context.AssertPermission("sduty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
-        caller.OnDuty = !caller.OnDuty;
-        throw Context.Reply(TranslationList.DutyStateSilent, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        bool state = caller.Administration.ToggleDuty();
+        throw Context.Reply(TranslationList.DutyStateSilent, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
     }
 }
 
@@ -56,6 +56,6 @@ public class DutyCheckCommand : Command
         Context.AssertPermission("duty");
         Context.AssertPlayer(out UnturnovPlayer caller);
 
-        throw Context.Reply(TranslationList.DutyStateCheck, caller.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        throw Context.Reply(TranslationList.DutyStateCheck, caller.Administration.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
     }
 }

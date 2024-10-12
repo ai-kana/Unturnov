@@ -113,7 +113,7 @@ public sealed class CommandContext
             return;
         }
 
-        if (!player.OnDuty)
+        if (!player.Administration.OnDuty)
         {
             throw Reply("You must be on duty to use this command");
         }
