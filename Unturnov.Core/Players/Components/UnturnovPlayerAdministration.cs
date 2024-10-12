@@ -39,8 +39,8 @@ public class UnturnovPlayerAdministration
         if (Owner.Permissions.HasPermission("spectator"))
         {
             Owner.Player.look.sendFreecamAllowed(OnDuty);
-            Owner.Player.look.sendFreecamAllowed(OnDuty);
-            Owner.Player.look.sendFreecamAllowed(OnDuty);
+            Owner.Player.look.sendWorkzoneAllowed(OnDuty);
+            Owner.Player.look.sendSpecStatsAllowed(OnDuty);
         }
 
         return OnDuty;
