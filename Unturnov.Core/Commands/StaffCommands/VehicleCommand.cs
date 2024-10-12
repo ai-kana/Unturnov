@@ -6,7 +6,7 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("vehicle", "v")]
 [CommandSyntax("<[id | name | guid>")]

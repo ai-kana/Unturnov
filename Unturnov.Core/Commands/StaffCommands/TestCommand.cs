@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Formatting;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("test")]
 public class TestCommand : Command

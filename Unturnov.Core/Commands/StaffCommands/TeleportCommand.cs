@@ -7,7 +7,7 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("teleport", "tp")]
 [CommandSyntax("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>")]

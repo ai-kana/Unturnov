@@ -3,7 +3,7 @@ using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Translations;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("shutdown")]
 [CommandSyntax("<[delay] | cancel>?")]

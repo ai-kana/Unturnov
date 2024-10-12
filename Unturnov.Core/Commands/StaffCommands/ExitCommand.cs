@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("exit")]
 [CommandSyntax("")]

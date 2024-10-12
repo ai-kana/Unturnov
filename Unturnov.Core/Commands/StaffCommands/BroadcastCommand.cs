@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Unturnov.Core.Chat;
 using Unturnov.Core.Commands.Framework;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("broadcast", "say")]
 [CommandSyntax("<[message]>")]

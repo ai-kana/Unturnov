@@ -5,7 +5,7 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Roles;
 using Unturnov.Core.Translations;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("role")]
 [CommandSyntax("<add, a | remove, r | list>")]

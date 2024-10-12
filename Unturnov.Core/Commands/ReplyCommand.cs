@@ -16,7 +16,6 @@ public class ReplyCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("reply");
         Context.AssertArguments(1);
 
         string message = Context.Form();

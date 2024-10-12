@@ -5,7 +5,7 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("clear")]
 [CommandSyntax("<[ground,g | inventory,i]>")]

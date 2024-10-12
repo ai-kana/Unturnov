@@ -3,7 +3,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("experience", "exp", "xp")]
 [CommandSyntax("<[add,a | remove,r | set,s | reset | check,c]>")]

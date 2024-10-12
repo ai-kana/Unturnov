@@ -6,13 +6,13 @@ using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 using Command = Unturnov.Core.Commands.Framework.Command;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
-[CommandData("giveitem", "gi")]
-[CommandSyntax("<[player] [id | name] [amount?]>")]
-public class GiveItemCommand : Command
+[CommandData("give", "item", "i")]
+[CommandSyntax("<[id | name] [amount?]>")]
+public class GiveCommand : Command
 {
-    public GiveItemCommand(CommandContext context) : base(context)
+    public GiveCommand(CommandContext context) : base(context)
     {
     }
 
@@ -49,19 +49,17 @@ public class GiveItemCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("giveitem");
+        Context.AssertPermission("give");
         Context.AssertOnDuty();
-        Context.AssertArguments(2);
-        
-        UnturnovPlayer target = Context.Parse<UnturnovPlayer>();
-        Context.MoveNext();
+        Context.AssertArguments(1);
+        Context.AssertPlayer(out UnturnovPlayer self);
 
         if (!GetItemAsset(Context.Current, out ItemAsset? itemAsset))
         {
             throw Context.Reply(TranslationList.ItemNotFound);
         }
         
-        if (Context.HasExactArguments(3))
+        if (Context.HasExactArguments(2))
         {
             Context.MoveNext();
 
@@ -70,11 +68,11 @@ public class GiveItemCommand : Command
                 throw Context.Reply(TranslationList.BadNumber);
             }
                 
-            target.Inventory.GiveItems(itemAsset!.id, count);
-            throw Context.Reply(TranslationList.GaveItemAmount, target.Name, count, itemAsset.FriendlyName, itemAsset.id);
+            self.Inventory.GiveItems(itemAsset!.id, count);
+            throw Context.Reply(TranslationList.ItemSelfAmount, count, itemAsset.FriendlyName, itemAsset.id);
         }
             
-        target.Inventory.GiveItem(itemAsset!.id);
-        throw Context.Reply(TranslationList.GaveItem, target.Name, itemAsset.FriendlyName, itemAsset.id);
+        self.Inventory.GiveItem(itemAsset!.id);
+        throw Context.Reply(TranslationList.ItemSelf, itemAsset.FriendlyName, itemAsset.id);
     }
 }

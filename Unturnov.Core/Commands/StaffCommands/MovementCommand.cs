@@ -3,7 +3,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("movement", "move")]
 [CommandSyntax("<[speed,s | jump,j | gravity,g]> <[value] | reset, r>")]

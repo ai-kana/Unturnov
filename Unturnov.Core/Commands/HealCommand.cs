@@ -15,8 +15,6 @@ public class HealCommand : Command
     
     public override UniTask ExecuteAsync()
     {
-        Context.AssertPermission("heal");
-
         if (Context.HasExactArguments(1))
         {
             Context.AssertPermission("heal.other");

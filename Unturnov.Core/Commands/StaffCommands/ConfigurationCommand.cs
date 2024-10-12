@@ -4,7 +4,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Configuration;
 using Unturnov.Core.Logging;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("configuration", "config")]
 public class ConfigurationCommand : Command

@@ -3,7 +3,7 @@ using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
 
-namespace Unturnov.Core.Commands;
+namespace Unturnov.Core.Commands.StaffCommands;
 
 [CommandData("reputation", "rep")]
 [CommandSyntax("<[get,g | set,s | reset,r | add,a | take,t]>")]
