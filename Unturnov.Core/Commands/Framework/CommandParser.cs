@@ -37,6 +37,7 @@ public class CommandParser
 
         RegisterCommandParser(new Vector3Parser());
         RegisterCommandParser(new GuidParser());
+        RegisterCommandParser(new TimeSpanParser());
     }
 
     public static void RegisterCommandParser<T>(ArgumentParser<T> parser)
@@ -250,6 +251,73 @@ public class CommandParser
         public override bool TryParse(IEnumerator<string> enumerator, out Guid result)
         {
             return Guid.TryParse(enumerator.Current, out result);
+        }
+    }
+
+    private class TimeSpanParser : ArgumentParser<TimeSpan>
+    {
+        private bool TryGetSeconds(string message, out long result)
+        {
+            int days = 0;
+            int hours = 0;
+            int minutes = 0;
+            int seconds = 0;
+
+            int current = 0;
+
+            bool found = false;
+
+            foreach (char c in message)
+            {
+                if (char.IsDigit(c))
+                {
+                    found = true;
+                    current = current * 10 + (c - '0');
+                    continue;
+                }
+
+                switch (c)
+                {
+                    case 'd':
+                        days = current;
+                        break;
+                    case 'h':
+                        hours = current;
+                        break;
+                    case 'm':
+                        minutes = current;
+                        break;
+                    default:
+                        seconds = current;
+                        break;
+                }
+
+                current = 0;
+            }
+
+            result = (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
+            return found;
+        }
+
+        public override bool TryParse(IEnumerator<string> enumerator, out TimeSpan result)
+        {
+            switch (enumerator.Current)
+            {
+                case "p":
+                case "perma":
+                case "permanent":
+                    result = new(0);
+                    return true;
+            }
+            
+            if (!TryGetSeconds(enumerator.Current, out long seconds))
+            {
+                result = new();
+                return false;
+            }
+
+            result = new(seconds * TimeSpan.TicksPerSecond);
+            return true;
         }
     }
 }
