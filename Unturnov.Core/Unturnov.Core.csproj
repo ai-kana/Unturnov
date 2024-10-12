@@ -50,6 +50,10 @@
             <SpecificVersion>False</SpecificVersion>
             <HintPath>..\Lib\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
+        <Reference Include="SDG.NetPak.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\Lib\SDG.NetPak.Runtime.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

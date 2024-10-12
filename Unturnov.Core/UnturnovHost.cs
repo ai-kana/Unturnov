@@ -86,9 +86,6 @@ public sealed class UnturnovHost
         await RoleManager.RegisterRoles();
 
         await OffenseManager.CreateTables();
-        await OffenseManager.AddOffense(Offense.Create(OffenseType.Warn, new(0), new(0), "Testing", 0));
-        IEnumerable<Offense> offenses = await OffenseManager.GetWarnOffenses(new(0));
-        _Logger.LogInformation($"Found{offenses.Count()}");
         
         _Logger.LogInformation("Started Unturnov!");
     }

@@ -1,7 +1,5 @@
 using Cysharp.Threading.Tasks;
-using SDG.NetTransport;
 using SDG.Unturned;
-using UnityEngine;
 using Unturnov.Core.Commands.Framework;
 using Unturnov.Core.Players;
 using Unturnov.Core.Translations;
@@ -33,20 +31,34 @@ public class ClearGroundCommand : Command
     public ClearGroundCommand(CommandContext context) : base(context)
     {
     }
-    
+
     public override UniTask ExecuteAsync()
     {
+        Context.AssertPlayer(out UnturnovPlayer self);
         Context.AssertPermission("clear");
         Context.AssertOnDuty();
         
-        if (Context.TryParse(out float distance))
-        {
-            Context.AssertPlayer(out UnturnovPlayer self);
-            ItemManager.ServerClearItemsInSphere(self.Movement.Position, distance);
-            //@0x5bc2 - Kana said to leave a comment here so she can make this more efficient :D
-            throw Context.Reply(TranslationList.ClearedGroundDistance, distance);
-        }
-        
+        float radius = Context.Parse<float>();
+
+        ItemManager.ServerClearItemsInSphere(self.Movement.Position, radius);
+        throw Context.Reply(TranslationList.ClearedGroundDistance, radius);
+    }
+}
+
+[CommandParent(typeof(ClearGroundCommand))]
+[CommandData("all", "a")]
+public class ClearGroundAllCommand : Command
+{
+    public ClearGroundAllCommand(CommandContext context) : base(context)
+    {
+    }
+
+    public override UniTask ExecuteAsync()
+    {
+        Context.AssertPlayer(out UnturnovPlayer self);
+        Context.AssertPermission("clear");
+        Context.AssertOnDuty();
+
         ItemManager.askClearAllItems();
         throw Context.Reply(TranslationList.ClearedGround);
     }
@@ -60,6 +72,7 @@ public class ClearInventoryCommand : Command
     public ClearInventoryCommand(CommandContext context) : base(context)
     {
     }
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("clear");
