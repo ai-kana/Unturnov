@@ -68,49 +68,6 @@ public class UnturnovPlayer : IPlayer, IFormattable
         return Name;
     }
 
-    public void Kick()
-    {
-        Provider.kick(SteamID, "No reason provided");
-    }
-
-    public void Kick(string reason)
-    {
-        Provider.kick(SteamID, reason);
-    }
-
-    public void Kick(Translation translation, params object[] args)
-    {
-        Provider.kick(SteamID, translation.TranslateNoColor(Language, args));
-    }
-
-    public void Ban(CSteamID issuerId)
-    {
-        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanPermanent, "No reason provided", discordInvite);
-        _ = Moderation.AddBan(issuerId, long.MaxValue , "No reason provided");
-    }
-    
-    public void Ban(CSteamID issuerId, long duration)
-    {
-        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanTemporary, "No reason provided", duration, discordInvite);
-        _ = Moderation.AddBan(issuerId, duration, "No reason provided");
-    }
-    
-    public void Ban(CSteamID issuerId, string reason)
-    {
-        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanPermanent, reason, discordInvite);
-        _ = Moderation.AddBan(issuerId, long.MaxValue, reason);
-    }
-    
-    public void Ban(CSteamID issuerId, long duration, string reason)
-    {
-        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanTemporary, reason, duration, discordInvite);
-        _ = Moderation.AddBan(issuerId, duration, reason);
-    }
-
     public void Exit()
     {
         //@0x5bc2 - Made this a separate method, so in case Kick gets some sort of logs, Exit kicks dont get logged.

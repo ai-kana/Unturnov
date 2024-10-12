@@ -24,14 +24,14 @@ public class KickCommand : Command
 
         if (Context.HasExactArguments(1))
         {
-            target.Kick();
+            target.Moderation.Kick();
             throw Context.Reply(TranslationList.Kicked, target.Name);
         }
         
         Context.MoveNext();
         string reason = Context.Form();
         
-        target.Kick(reason);
+        target.Moderation.Kick(reason);
         throw Context.Reply(TranslationList.KickedReason, target.Name, reason);
     }
 }

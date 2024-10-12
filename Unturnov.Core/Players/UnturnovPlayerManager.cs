@@ -78,7 +78,7 @@ public class UnturnovPlayerManager
     {
         foreach (UnturnovPlayer player in GetPlayerListCopy())
         {
-            player.Kick(reason);
+            player.Moderation.Kick(reason);
         }
     
         while (Players.Count != 0);
@@ -88,7 +88,7 @@ public class UnturnovPlayerManager
     {
         foreach (UnturnovPlayer player in GetPlayerListCopy())
         {
-            player.Kick(translation, args);
+            player.Moderation.Kick(translation, args);
         }
     
         while (Players.Count != 0);
@@ -145,7 +145,7 @@ public class UnturnovPlayerManager
         Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
         if (permBan != null)
         {
-            player.Kick(TranslationList.BanPermanent, permBan.Reason, discord);
+            player.Moderation.Kick(TranslationList.BanPermanent, permBan.Reason, discord);
             return;
         }
         else
@@ -154,7 +154,7 @@ public class UnturnovPlayerManager
                 .OrderByDescending(x => x.Remaining).FirstOrDefault();
             if (nonPermBan != null)
             {
-                player.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
+                player.Moderation.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
                 return;
             }
         }

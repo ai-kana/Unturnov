@@ -1,5 +1,7 @@
 using System.Collections;
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using SDG.Unturned;
 using Steamworks;
 using UnityEngine;
 using Unturnov.Core.Offenses;
@@ -70,4 +72,48 @@ public class UnturnovPlayerModeration
     {
         await OffenseManager.AddOffense(Offense.Create(OffenseType.Ban, Owner.SteamID, issuer, reason, duration));
     }
+
+    public void Ban(CSteamID issuerId)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanPermanent, "No reason provided", discordInvite);
+        _ = AddBan(issuerId, long.MaxValue , "No reason provided");
+    }
+    
+    public void Ban(CSteamID issuerId, long duration)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanTemporary, "No reason provided", duration, discordInvite);
+        _ = AddBan(issuerId, duration, "No reason provided");
+    }
+    
+    public void Ban(CSteamID issuerId, string reason)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanPermanent, reason, discordInvite);
+        _ = AddBan(issuerId, long.MaxValue, reason);
+    }
+    
+    public void Ban(CSteamID issuerId, long duration, string reason)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanTemporary, reason, duration, discordInvite);
+        _ = AddBan(issuerId, duration, reason);
+    }
+
+    public void Kick()
+    {
+        Provider.kick(Owner.SteamID, "No reason provided");
+    }
+
+    public void Kick(string reason)
+    {
+        Provider.kick(Owner.SteamID, reason);
+    }
+
+    public void Kick(Translation translation, params object[] args)
+    {
+        Provider.kick(Owner.SteamID, translation.TranslateNoColor(Owner.Language, args));
+    }
+
 }
