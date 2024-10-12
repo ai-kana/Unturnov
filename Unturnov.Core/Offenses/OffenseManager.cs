@@ -8,6 +8,8 @@ namespace Unturnov.Core.Offenses;
 // God i hate sql
 // I FUCKING HATE IT
 // its better when no headache
+
+// what did you do lmfaoo 
 public class OffenseManager
 {
     private const string OffenseTable = "Offenses";
@@ -86,7 +88,7 @@ public class OffenseManager
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
-        await using MySqlCommand command = new(GetOffensesCommand, connection);
+        await using MySqlCommand command = new(GetWarnOffensesCommand, connection);
         command.Parameters.Add("@offender", MySqlDbType.UInt64).Value = offender.m_SteamID;
         await using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -98,7 +100,7 @@ public class OffenseManager
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
-        await using MySqlCommand command = new(GetOffensesCommand, connection);
+        await using MySqlCommand command = new(GetMuteOffensesCommand, connection);
         command.Parameters.Add("@offender", MySqlDbType.UInt64).Value = offender.m_SteamID;
         await using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -110,7 +112,7 @@ public class OffenseManager
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
-        await using MySqlCommand command = new(GetOffensesCommand, connection);
+        await using MySqlCommand command = new(GetBanOffensesCommand, connection);
         command.Parameters.Add("@offender", MySqlDbType.UInt64).Value = offender.m_SteamID;
         await using MySqlDataReader reader = await command.ExecuteReaderAsync();
 

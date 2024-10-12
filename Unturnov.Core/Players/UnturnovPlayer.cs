@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using SDG.Unturned;
 using Steamworks;
 using Unturnov.Core.Chat;
@@ -80,6 +81,34 @@ public class UnturnovPlayer : IPlayer, IFormattable
     public void Kick(Translation translation, params object[] args)
     {
         Provider.kick(SteamID, translation.TranslateNoColor(Language, args));
+    }
+
+    public void Ban(CSteamID issuerId)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanPermanent, "No reason provided", discordInvite);
+        _ = Moderation.AddBan(issuerId, long.MaxValue , "No reason provided");
+    }
+    
+    public void Ban(CSteamID issuerId, long duration)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanTemporary, "No reason provided", duration, discordInvite);
+        _ = Moderation.AddBan(issuerId, duration, "No reason provided");
+    }
+    
+    public void Ban(CSteamID issuerId, string reason)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanPermanent, reason, discordInvite);
+        _ = Moderation.AddBan(issuerId, long.MaxValue, reason);
+    }
+    
+    public void Ban(CSteamID issuerId, long duration, string reason)
+    {
+        string discordInvite = UnturnovHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.BanTemporary, reason, duration, discordInvite);
+        _ = Moderation.AddBan(issuerId, duration, reason);
     }
 
     public void Exit()
